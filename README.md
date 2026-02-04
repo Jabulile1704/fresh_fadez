@@ -1,16 +1,48 @@
-# hair_appointment_app
+# 💇‍♀️ Hair Appointment Booking App
 
-A new Flutter project.
+A modern **Hair Appointment Booking Application** designed to simplify the process of booking, managing, and tracking hair appointments for clients and stylists.  
+The app focuses on **convenience, efficiency, and user-friendly design**, allowing users to book services anytime, anywhere.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+### 👤 Client Features
+- User registration and authentication
+- Browse available hair services
+- Book hair appointments
+- View upcoming and past appointments
+- Receive booking confirmations
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### ✂️ Stylist / Admin Features
+- Manage available services
+- View scheduled appointments
+- Update appointment status
+- Manage availability
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🛠️ Technologies Used
+
+- **Frontend:** (e.g. Flutter / HTML, CSS, JavaScript)  
+- **Backend:** (e.g. Firebase / REST API)
+- **Authentication:** Firebase Authentication
+- **Database:** Firestore / SQL / NoSQL
+- **Hosting (optional):** Firebase Hosting / Azure / GitHub Pages
+
+> *(Update the tech stack section to match your actual implementation)*
+
+---
+
+## 📱 Screens Overview
+
+- Login & Registration Screen  
+- Home / Services Screen  
+- Appointment Booking Screen  
+- Appointment History Screen  
+- Profile Management Screen  
+
+---
+
+## 📂 Project Structure (Example)
+
