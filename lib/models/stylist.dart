@@ -1,4 +1,48 @@
 class Stylist {
+
+  Stylist({
+    required this.id,
+    required this.salonId,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phone,
+    required this.createdAt, this.profileImage = '',
+    this.specialization = '',
+    this.experienceYears = 0,
+    this.rating = 0.0,
+    this.reviewCount = 0,
+    this.services = const [],
+    this.availableDays = const [],
+    this.startTime = '09:00',
+    this.endTime = '18:00',
+    this.isAvailable = true,
+    this.bio = '',
+    this.totalClients = 0,
+  });
+
+  // Convert from JSON
+  factory Stylist.fromJson(Map<String, dynamic> json) => Stylist(
+      id: json['id'] ?? '',
+      salonId: json['salonId'] ?? '',
+      firstName: json['firstName'] ?? '',
+      lastName: json['lastName'] ?? '',
+      email: json['email'] ?? '',
+      phone: json['phone'] ?? '',
+      profileImage: json['profileImage'] ?? '',
+      specialization: json['specialization'] ?? '',
+      experienceYears: json['experienceYears'] ?? 0,
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      reviewCount: json['reviewCount'] ?? 0,
+      services: List<String>.from(json['services'] ?? []),
+      availableDays: List<String>.from(json['availableDays'] ?? []),
+      startTime: json['startTime'] ?? '09:00',
+      endTime: json['endTime'] ?? '18:00',
+      isAvailable: json['isAvailable'] ?? true,
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      bio: json['bio'] ?? '',
+      totalClients: json['totalClients'] ?? 0,
+    );
   final String id;
   final String salonId;
   final String firstName;
@@ -18,28 +62,6 @@ class Stylist {
   final DateTime createdAt;
   final String bio;
   final int totalClients;
-
-  Stylist({
-    required this.id,
-    required this.salonId,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.phone,
-    this.profileImage = '',
-    this.specialization = '',
-    this.experienceYears = 0,
-    this.rating = 0.0,
-    this.reviewCount = 0,
-    this.services = const [],
-    this.availableDays = const [],
-    this.startTime = '09:00',
-    this.endTime = '18:00',
-    this.isAvailable = true,
-    required this.createdAt,
-    this.bio = '',
-    this.totalClients = 0,
-  });
 
   // Full name getter
   String get fullName => '$firstName $lastName';
@@ -65,8 +87,7 @@ class Stylist {
     DateTime? createdAt,
     String? bio,
     int? totalClients,
-  }) {
-    return Stylist(
+  }) => Stylist(
       id: id ?? this.id,
       salonId: salonId ?? this.salonId,
       firstName: firstName ?? this.firstName,
@@ -87,11 +108,9 @@ class Stylist {
       bio: bio ?? this.bio,
       totalClients: totalClients ?? this.totalClients,
     );
-  }
 
   // Convert to JSON
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'salonId': salonId,
       'firstName': firstName,
@@ -112,35 +131,7 @@ class Stylist {
       'bio': bio,
       'totalClients': totalClients,
     };
-  }
-
-  // Convert from JSON
-  factory Stylist.fromJson(Map<String, dynamic> json) {
-    return Stylist(
-      id: json['id'] ?? '',
-      salonId: json['salonId'] ?? '',
-      firstName: json['firstName'] ?? '',
-      lastName: json['lastName'] ?? '',
-      email: json['email'] ?? '',
-      phone: json['phone'] ?? '',
-      profileImage: json['profileImage'] ?? '',
-      specialization: json['specialization'] ?? '',
-      experienceYears: json['experienceYears'] ?? 0,
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      reviewCount: json['reviewCount'] ?? 0,
-      services: List<String>.from(json['services'] ?? []),
-      availableDays: List<String>.from(json['availableDays'] ?? []),
-      startTime: json['startTime'] ?? '09:00',
-      endTime: json['endTime'] ?? '18:00',
-      isAvailable: json['isAvailable'] ?? true,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      bio: json['bio'] ?? '',
-      totalClients: json['totalClients'] ?? 0,
-    );
-  }
 
   @override
-  String toString() {
-    return 'Stylist(id: $id, fullName: $fullName, specialization: $specialization, rating: $rating)';
-  }
+  String toString() => 'Stylist(id: $id, fullName: $fullName, specialization: $specialization, rating: $rating)';
 }

@@ -31,8 +31,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('My Appointments'),
@@ -44,25 +43,21 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
           : ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.medium),
               itemCount: appointments.length,
-              itemBuilder: (context, index) {
-                return _buildAppointmentCard(appointments[index]);
-              },
+              itemBuilder: (context, index) => _buildAppointmentCard(appointments[index]),
             ),
     );
-  }
 
-  Widget _buildEmptyState() {
-    return Center(
+  Widget _buildEmptyState() => Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.calendar_today_outlined,
             size: 64,
-            color: AppColors.textSecondary.withOpacity(0.5),
+            color: AppColors.textSecondary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
-          Text(
+          const Text(
             'No Appointments Yet',
             style: TextStyle(
               fontSize: 18,
@@ -71,7 +66,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
+          const Text(
             'Book your first appointment to get started',
             style: TextStyle(
               fontSize: 14,
@@ -104,10 +99,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
         ],
       ),
     );
-  }
 
   Widget _buildAppointmentCard(Map<String, dynamic> appointment) {
-    Color statusColor = appointment['status'] == 'confirmed'
+    final statusColor = appointment['status'] == 'confirmed'
         ? AppColors.success
         : AppColors.warning;
 
@@ -118,7 +112,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
         borderRadius: BorderRadius.circular(AppBorderRadius.large),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -135,7 +129,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               children: [
                 Text(
                   appointment['service'],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
@@ -147,7 +141,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
+                    color: statusColor.withValues(alpha: 0.1),
                     borderRadius:
                         BorderRadius.circular(AppBorderRadius.small),
                   ),
@@ -167,7 +161,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             // Staff name
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.person_outline,
                   size: 16,
                   color: AppColors.textSecondary,
@@ -175,7 +169,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 const SizedBox(width: 8),
                 Text(
                   appointment['staff'],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                   ),
@@ -187,7 +181,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             // Date and time
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.calendar_today_outlined,
                   size: 16,
                   color: AppColors.textSecondary,
@@ -195,13 +189,13 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 const SizedBox(width: 8),
                 Text(
                   appointment['date'],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(width: 16),
-                Icon(
+                const Icon(
                   Icons.access_time_outlined,
                   size: 16,
                   color: AppColors.textSecondary,
@@ -209,7 +203,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 const SizedBox(width: 8),
                 Text(
                   appointment['time'],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                   ),
@@ -224,7 +218,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               children: [
                 Text(
                   appointment['price'],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: AppColors.primary,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'utils/theme.dart';
-import 'utils/constants.dart';
-import 'routes/app_routes.dart' hide AppRoutes;
+
+import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/home_screen.dart' hide appName;
+import 'utils/constants.dart';
+import 'utils/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
     debugShowCheckedModeBanner: false,
     home: const LoginScreen(),
     routes: {
-      AppRoutes.login: (context) => LoginScreen(),
-      AppRoutes.home: (context) => HomeScreen(),
+      AppRoutes.login: (context) => const LoginScreen(),
+      AppRoutes.home: (context) => const HomeScreen(),
     },
   );
 }

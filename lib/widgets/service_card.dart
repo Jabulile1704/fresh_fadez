@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class ServiceCard extends StatefulWidget {
-  final Map<String, dynamic> service;
-  final VoidCallback onTap;
 
   const ServiceCard({
-    Key? key,
-    required this.service,
-    required this.onTap,
+    required this.service, required this.onTap, Key? key,
   }) : super(key: key);
+  final Map<String, dynamic> service;
+  final VoidCallback onTap;
 
   @override
   State<ServiceCard> createState() => _ServiceCardState();
@@ -53,8 +51,7 @@ class _ServiceCardState extends State<ServiceCard>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
@@ -65,7 +62,7 @@ class _ServiceCardState extends State<ServiceCard>
             borderRadius: BorderRadius.circular(AppBorderRadius.large),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -90,8 +87,8 @@ class _ServiceCardState extends State<ServiceCard>
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            AppColors.primary.withOpacity(0.1),
-                            AppColors.primary.withOpacity(0.05),
+                            AppColors.primary.withValues(alpha: 0.1),
+                            AppColors.primary.withValues(alpha: 0.05),
                           ],
                         ),
                         borderRadius:
@@ -111,7 +108,7 @@ class _ServiceCardState extends State<ServiceCard>
                       children: [
                         Text(
                           widget.service['name'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
@@ -122,7 +119,7 @@ class _ServiceCardState extends State<ServiceCard>
                         const SizedBox(height: 4),
                         Text(
                           widget.service['category'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
                           ),
@@ -138,7 +135,7 @@ class _ServiceCardState extends State<ServiceCard>
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.08),
+                        color: AppColors.primary.withValues(alpha: 0.08),
                         borderRadius:
                             BorderRadius.circular(AppBorderRadius.small),
                       ),
@@ -146,7 +143,7 @@ class _ServiceCardState extends State<ServiceCard>
                         children: [
                           Text(
                             widget.service['price'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
@@ -154,7 +151,7 @@ class _ServiceCardState extends State<ServiceCard>
                           ),
                           Text(
                             widget.service['duration'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondary,
                             ),
@@ -170,5 +167,4 @@ class _ServiceCardState extends State<ServiceCard>
         ),
       ),
     );
-  }
 }

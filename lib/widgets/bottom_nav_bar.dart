@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class BottomNavBar extends StatelessWidget {
+
+  const BottomNavBar({
+    required this.currentIndex, required this.onIndexChanged, Key? key,
+  }) : super(key: key);
   final int currentIndex;
   final Function(int) onIndexChanged;
 
-  const BottomNavBar({
-    Key? key,
-    required this.currentIndex,
-    required this.onIndexChanged,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       // Ensures the bottom nav bar fits standard height
       height: kBottomNavigationBarHeight,
       child: BottomNavigationBar(
@@ -24,11 +21,11 @@ class BottomNavBar extends StatelessWidget {
         elevation: 8,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textSecondary,
-        selectedLabelStyle: TextStyle(
+        selectedLabelStyle: const TextStyle(
           fontSize: AppFontSize.small,
           fontWeight: FontWeight.w600,
         ),
-        unselectedLabelStyle: TextStyle(
+        unselectedLabelStyle: const TextStyle(
           fontSize: AppFontSize.small,
           fontWeight: FontWeight.w500,
         ),
@@ -58,5 +55,4 @@ class BottomNavBar extends StatelessWidget {
         ],
       ),
     );
-  }
 }

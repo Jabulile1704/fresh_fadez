@@ -22,29 +22,29 @@ class AppColors {
 
 // Spacing
 class AppSpacing {
-  static const double small = 8.0;
-  static const double medium = 16.0;
-  static const double large = 24.0;
-  static const double xlarge = 32.0;
+  static const double small = 8;
+  static const double medium = 16;
+  static const double large = 24;
+  static const double xlarge = 32;
 }
 
 // Border Radius
 class AppRadius {
-  static const double small = 8.0;
-  static const double medium = 12.0;
-  static const double large = 16.0;
-  static const double circle = 50.0;
+  static const double small = 8;
+  static const double medium = 12;
+  static const double large = 16;
+  static const double circle = 50;
 }
 
 // Font Sizes
 class AppFontSize {
-  static const double tiny = 10.0;
-  static const double small = 12.0;
-  static const double body = 14.0;
-  static const double subtitle = 16.0;
-  static const double title = 18.0;
-  static const double heading = 24.0;
-  static const double largeHeading = 32.0;
+  static const double tiny = 10;
+  static const double small = 12;
+  static const double body = 14;
+  static const double subtitle = 16;
+  static const double title = 18;
+  static const double heading = 24;
+  static const double largeHeading = 32;
 }
 
 // Service Categories
@@ -85,9 +85,9 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Email is required';
     }
-    const String emailPattern =
+    const emailPattern =
         r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-    final RegExp regex = RegExp(emailPattern);
+    final regex = RegExp(emailPattern);
     if (!regex.hasMatch(value)) {
       return 'Please enter a valid email';
     }

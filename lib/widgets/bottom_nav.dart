@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class BottomNavBar extends StatelessWidget {
+
+  const BottomNavBar({
+    required this.currentIndex, required this.onIndexChanged, Key? key,
+  }) : super(key: key);
   final int currentIndex;
   final Function(int) onIndexChanged;
 
-  const BottomNavBar({
-    Key? key,
-    required this.currentIndex,
-    required this.onIndexChanged,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
+  Widget build(BuildContext context) => BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onIndexChanged,
       type: BottomNavigationBarType.fixed,
@@ -21,15 +18,15 @@ class BottomNavBar extends StatelessWidget {
       elevation: 8,
       selectedItemColor: const Color.fromARGB(255, 248, 133, 2),
       unselectedItemColor: AppColors.textSecondary,
-      selectedLabelStyle: TextStyle(
+      selectedLabelStyle: const TextStyle(
         fontSize: AppFontSize.small,
         fontWeight: FontWeight.w600,
       ),
-      unselectedLabelStyle: TextStyle(
+      unselectedLabelStyle: const TextStyle(
         fontSize: AppFontSize.small,
         fontWeight: FontWeight.w500,
       ),
-      items: [
+      items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
           activeIcon: Icon(Icons.home),
@@ -52,5 +49,4 @@ class BottomNavBar extends StatelessWidget {
         ),
       ],
     );
-  }
 }

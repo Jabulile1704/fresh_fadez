@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class SalonHeader extends StatelessWidget {
-  final Map<String, dynamic> salonInfo;
 
   const SalonHeader({
-    Key? key,
-    required this.salonInfo,
+    required this.salonInfo, Key? key,
   }) : super(key: key);
+  final Map<String, dynamic> salonInfo;
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
+  Widget build(BuildContext context) => Stack(
       fit: StackFit.expand,
       children: [
         // Background image or gradient placeholder
@@ -21,8 +19,8 @@ class SalonHeader extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.primary.withOpacity(0.8),
-                AppColors.primaryDark.withOpacity(0.8),
+                AppColors.primary.withValues(alpha: 0.8),
+                AppColors.primaryDark.withValues(alpha: 0.8),
               ],
             ),
           ),
@@ -30,7 +28,7 @@ class SalonHeader extends StatelessWidget {
             child: Icon(
               Icons.store_outlined,
               size: 80,
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
             ),
           ),
         ),
@@ -43,7 +41,7 @@ class SalonHeader extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withOpacity(0.3),
+                Colors.black.withValues(alpha: 0.3),
               ],
             ),
           ),
@@ -64,7 +62,7 @@ class SalonHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppBorderRadius.medium),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -77,7 +75,7 @@ class SalonHeader extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.star,
                       color: Colors.amber,
                       size: 16,
@@ -107,5 +105,4 @@ class SalonHeader extends StatelessWidget {
         ),
       ],
     );
-  }
 }

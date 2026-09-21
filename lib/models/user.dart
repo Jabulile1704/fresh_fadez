@@ -1,12 +1,4 @@
 class User {
-  final String id;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String phone;
-  final String profileImage;
-  final String role;
-  final bool isActive;
 
   const User({
     required this.id,
@@ -18,6 +10,14 @@ class User {
     this.role = 'customer',
     this.isActive = true,
   });
+  final String id;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String phone;
+  final String profileImage;
+  final String role;
+  final bool isActive;
 
   String get fullName => '$firstName $lastName';
 
@@ -30,8 +30,7 @@ class User {
     String? profileImage,
     String? role,
     bool? isActive,
-  }) {
-    return User(
+  }) => User(
       id: id ?? this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
@@ -41,7 +40,6 @@ class User {
       role: role ?? this.role,
       isActive: isActive ?? this.isActive,
     );
-  }
 
   @override
   String toString() => 'User(id: $id, fullName: $fullName, email: $email)';

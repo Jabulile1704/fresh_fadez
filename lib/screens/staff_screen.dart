@@ -49,8 +49,7 @@ class _StaffScreenState extends State<StaffScreen> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Our Team'),
@@ -60,22 +59,18 @@ class _StaffScreenState extends State<StaffScreen> {
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.medium),
         itemCount: staffMembers.length,
-        itemBuilder: (context, index) {
-          return _buildStaffCard(staffMembers[index]);
-        },
+        itemBuilder: (context, index) => _buildStaffCard(staffMembers[index]),
       ),
     );
-  }
 
-  Widget _buildStaffCard(Map<String, dynamic> staff) {
-    return Container(
+  Widget _buildStaffCard(Map<String, dynamic> staff) => Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.medium),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppBorderRadius.large),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -97,12 +92,12 @@ class _StaffScreenState extends State<StaffScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        AppColors.primary.withOpacity(0.6),
-                        AppColors.primaryDark.withOpacity(0.6),
+                        AppColors.primary.withValues(alpha: 0.6),
+                        AppColors.primaryDark.withValues(alpha: 0.6),
                       ],
                     ),
                   ),
-                  child: Center(
+                  child: const Center(
                     child: Icon(
                       Icons.person_outline,
                       size: 40,
@@ -118,7 +113,7 @@ class _StaffScreenState extends State<StaffScreen> {
                     children: [
                       Text(
                         staff['name'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
@@ -127,7 +122,7 @@ class _StaffScreenState extends State<StaffScreen> {
                       const SizedBox(height: 4),
                       Text(
                         staff['title'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -136,7 +131,7 @@ class _StaffScreenState extends State<StaffScreen> {
                       const SizedBox(height: 4),
                       Text(
                         staff['specialty'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
                         ),
@@ -147,7 +142,7 @@ class _StaffScreenState extends State<StaffScreen> {
                       // Rating
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
                             size: 14,
                             color: Colors.amber,
@@ -155,7 +150,7 @@ class _StaffScreenState extends State<StaffScreen> {
                           const SizedBox(width: 4),
                           Text(
                             '${staff['rating']}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary,
@@ -164,7 +159,7 @@ class _StaffScreenState extends State<StaffScreen> {
                           const SizedBox(width: 4),
                           Text(
                             '(${staff['reviews']} reviews)',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondary,
                             ),
@@ -184,12 +179,12 @@ class _StaffScreenState extends State<StaffScreen> {
                 vertical: 6,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppBorderRadius.small),
               ),
               child: Text(
                 '${staff['experience']} of experience',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,
@@ -230,5 +225,4 @@ class _StaffScreenState extends State<StaffScreen> {
         ),
       ),
     );
-  }
 }

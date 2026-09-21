@@ -3,14 +3,13 @@ import '../models/salon.dart';
 import '../utils/constants.dart';
 
 class SpinningSalonCard extends StatefulWidget {
-  final Salon salon;
-  final VoidCallback? onTap;
 
   const SpinningSalonCard({
-    Key? key,
-    required this.salon,
+    required this.salon, Key? key,
     this.onTap,
   }) : super(key: key);
+  final Salon salon;
+  final VoidCallback? onTap;
 
   @override
   State<SpinningSalonCard> createState() => _SpinningSalonCardState();
@@ -47,7 +46,9 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
   }
 
   void _flipCard() {
-    if (_spinController.isAnimating) return;
+    if (_spinController.isAnimating) {
+      return;
+    }
 
     if (isFront) {
       _spinController.forward();
@@ -60,8 +61,7 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: _flipCard,
       child: AnimatedBuilder(
         animation: _spinAnimation,
@@ -80,12 +80,10 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
         },
       ),
     );
-  }
 
   // ---------- FRONT ----------
-  Widget _buildFrontCard() {
-    return Container(
-      margin: EdgeInsets.symmetric(
+  Widget _buildFrontCard() => Container(
+      margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.medium,
         vertical: AppSpacing.small,
       ),
@@ -98,14 +96,14 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.15),
+            color: AppColors.primary.withValues(alpha: 0.15),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.large),
+        padding: const EdgeInsets.all(AppSpacing.large),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -120,22 +118,22 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
                     children: [
                       Text(
                         widget.salon.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: AppFontSize.title,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      SizedBox(height: AppSpacing.small),
+                      const SizedBox(height: AppSpacing.small),
                       Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.medium,
                           vertical: AppSpacing.small,
                         ),
                         decoration: BoxDecoration(
                           color: widget.salon.isOpen
-                              ? AppColors.success.withOpacity(0.2)
-                              : AppColors.error.withOpacity(0.2),
+                              ? AppColors.success.withValues(alpha: 0.2)
+                              : AppColors.error.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(AppRadius.medium),
                         ),
                         child: Text(
@@ -153,16 +151,16 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
                   ),
                 ),
                 Icon(Icons.touch_app_rounded,
-                    color: AppColors.primary.withOpacity(0.5)),
+                    color: AppColors.primary.withValues(alpha: 0.5)),
               ],
             ),
 
-            SizedBox(height: AppSpacing.large),
+            const SizedBox(height: AppSpacing.large),
 
             // Description
             Text(
               widget.salon.description,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: AppFontSize.body,
                 color: AppColors.textSecondary,
               ),
@@ -170,14 +168,14 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
               overflow: TextOverflow.ellipsis,
             ),
 
-            SizedBox(height: AppSpacing.large),
+            const SizedBox(height: AppSpacing.large),
 
             Center(
               child: Text(
                 '↻ Tap to flip',
                 style: TextStyle(
                   fontSize: AppFontSize.small,
-                  color: AppColors.primary.withOpacity(0.6),
+                  color: AppColors.primary.withValues(alpha: 0.6),
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -186,15 +184,13 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
         ),
       ),
     );
-  }
 
   // ---------- BACK ----------
-  Widget _buildBackCard() {
-    return Transform(
+  Widget _buildBackCard() => Transform(
       alignment: Alignment.center,
       transform: Matrix4.identity()..rotateY(3.1415926535897932),
       child: Container(
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: AppSpacing.medium,
           vertical: AppSpacing.small,
         ),
@@ -207,11 +203,11 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.large),
+          padding: const EdgeInsets.all(AppSpacing.large),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Address',
                 style: TextStyle(
                   color: Colors.white70,
@@ -221,10 +217,10 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
               Text(
                 '${widget.salon.address}, ${widget.salon.city}',
                 style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                    const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
-              SizedBox(height: AppSpacing.large),
-              Center(
+              const SizedBox(height: AppSpacing.large),
+              const Center(
                 child: Text(
                   '↻ Tap to flip back',
                   style: TextStyle(
@@ -239,5 +235,4 @@ class _SpinningSalonCardState extends State<SpinningSalonCard>
         ),
       ),
     );
-  }
 }

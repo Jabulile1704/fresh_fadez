@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class CustomButton extends StatelessWidget {
+
+  const CustomButton({
+    required this.label, required this.onPressed, Key? key,
+    this.backgroundColor,
+    this.textColor,
+    this.width,
+    this.height = 50,
+    this.isLoading = false,
+    this.isEnabled = true,
+  }) : super(key: key);
   final String label;
   final VoidCallback onPressed;
   final Color? backgroundColor;
@@ -11,21 +21,8 @@ class CustomButton extends StatelessWidget {
   final bool isLoading;
   final bool isEnabled;
 
-  const CustomButton({
-    Key? key,
-    required this.label,
-    required this.onPressed,
-    this.backgroundColor,
-    this.textColor,
-    this.width,
-    this.height = 50,
-    this.isLoading = false,
-    this.isEnabled = true,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       width: width,
       height: height,
       child: ElevatedButton(
@@ -55,5 +52,4 @@ class CustomButton extends StatelessWidget {
               ),
       ),
     );
-  }
 }

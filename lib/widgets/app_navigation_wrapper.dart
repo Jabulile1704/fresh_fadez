@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../screens/home_screen.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
-import '../routes/app_routes.dart' hide AppRoutes;
 
 class AppNavigationWrapper extends StatefulWidget {
   const AppNavigationWrapper({Key? key}) : super(key: key);
@@ -15,15 +15,13 @@ class _AppNavigationWrapperState extends State<AppNavigationWrapper> {
   int _currentIndex = 0;
 
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Handle back navigation
-        if (_currentIndex != 0) {
+  Widget build(BuildContext context) => PopScope(
+      // Back from any other tab returns to Home instead of leaving the app.
+      canPop: _currentIndex == 0,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
           setState(() => _currentIndex = 0);
-          return false;
         }
-        return true;
       },
       child: Scaffold(
         body: _buildScreen(_currentIndex),
@@ -37,7 +35,6 @@ class _AppNavigationWrapperState extends State<AppNavigationWrapper> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
-  }
 
   Widget _buildScreen(int index) {
     switch (index) {
@@ -57,11 +54,10 @@ class _AppNavigationWrapperState extends State<AppNavigationWrapper> {
     }
   }
 
-  Widget _buildFAB(BuildContext context) {
-    return Container(
+  Widget _buildFAB(BuildContext context) => Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
@@ -71,7 +67,7 @@ class _AppNavigationWrapperState extends State<AppNavigationWrapper> {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.4),
+            color: AppColors.primary.withValues(alpha: 0.4),
             blurRadius: 16,
             spreadRadius: 2,
             offset: const Offset(0, 4),
@@ -85,8 +81,8 @@ class _AppNavigationWrapperState extends State<AppNavigationWrapper> {
             Navigator.pushNamed(context, AppRoutes.booking);
           },
           borderRadius: BorderRadius.circular(AppBorderRadius.circle),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.medium),
+          child: const Padding(
+            padding: EdgeInsets.all(AppSpacing.medium),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -96,7 +92,7 @@ class _AppNavigationWrapperState extends State<AppNavigationWrapper> {
                   color: Colors.white,
                   size: 32,
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
                   'Book',
                   style: TextStyle(
@@ -111,5 +107,4 @@ class _AppNavigationWrapperState extends State<AppNavigationWrapper> {
         ),
       ),
     );
-  }
 }

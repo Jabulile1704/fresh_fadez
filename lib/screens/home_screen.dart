@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../utils/constants.dart';
+import '../widgets/salon_header.dart';
 import '../widgets/service_card.dart';
 import '../widgets/staff_card.dart';
-import '../widgets/salon_header.dart';
-import '../routes/app_routes.dart' hide AppRoutes;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  int _selectedServiceIndex = 0;
 
   final List<Map<String, dynamic>> salonInfo = [
     {
@@ -33,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     {
       'name': 'Hair Cutting',
       'category': 'Hair Services',
-      'price': '\R45',
+      'price': 'R45',
       'duration': '45 min',
       'icon': Icons.content_cut,
       'description': 'Professional haircut with styling',
@@ -42,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     {
       'name': 'Hair Coloring',
       'category': 'Hair Services',
-      'price': '\R185',
+      'price': 'R185',
       'duration': '90 min',
       'icon': Icons.palette,
       'description': 'Full color treatment with consultation',
@@ -51,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     {
       'name': 'Facial Treatment',
       'category': 'Skincare',
-      'price': '\R165',
+      'price': 'R165',
       'duration': '60 min',
       'icon': Icons.face,
       'description': 'Deep cleansing and rejuvenation',
@@ -60,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     {
       'name': 'Manicure & Pedicure',
       'category': 'Nails',
-      'price': '\R155',
+      'price': 'R155',
       'duration': '60 min',
       'icon': Icons.brush,
       'description': 'Full nail care and polish',
@@ -146,7 +145,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           // Salon Header
           SliverAppBar(
             expandedHeight: 250,
-            floating: false,
             pinned: true,
             backgroundColor: AppColors.primary,
             flexibleSpace: FlexibleSpaceBar(
@@ -175,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       // Rating and reviews
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
                             color: Colors.amber,
                             size: 20,
@@ -183,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           const SizedBox(width: 6),
                           Text(
                             '${salon['rating']}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary,
@@ -192,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           const SizedBox(width: 4),
                           Text(
                             '(${salon['reviews']} reviews)',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                               color: AppColors.textSecondary,
                             ),
@@ -222,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       const SizedBox(height: 24),
 
                       // Description
-                      Text(
+                      const Text(
                         'About Us',
                         style: TextStyle(
                           fontSize: 18,
@@ -233,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       const SizedBox(height: 8),
                       Text(
                         salon['description'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
                           color: AppColors.textSecondary,
                           height: 1.6,
@@ -271,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Featured Services',
                             style: TextStyle(
                               fontSize: 20,
@@ -281,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                           GestureDetector(
                             onTap: _navigateToServices,
-                            child: Text(
+                            child: const Text(
                               'See All',
                               style: TextStyle(
                                 fontSize: 14,
@@ -307,14 +305,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         itemCount: featuredServices.length,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return ServiceCard(
+                        itemBuilder: (context, index) => ServiceCard(
                             service: featuredServices[index],
-                            onTap: () {
-                              setState(() => _selectedServiceIndex = index);
-                            },
-                          );
-                        },
+                            // TODO: open the booking flow for this service.
+                            onTap: () {},
+                          ),
                       ),
 
                       const SizedBox(height: 32),
@@ -323,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Our Team',
                             style: TextStyle(
                               fontSize: 20,
@@ -335,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             onTap: () {
                               // Navigate to all staff
                             },
-                            child: Text(
+                            child: const Text(
                               'View All',
                               style: TextStyle(
                                 fontSize: 14,
@@ -355,8 +350,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: staffMembers.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
+                          itemBuilder: (context, index) => Padding(
                               padding: EdgeInsets.only(
                                 left: index == 0
                                     ? AppSpacing.medium
@@ -370,8 +364,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 onTap: () =>
                                     _navigateToStaffDetail(staffMembers[index]),
                               ),
-                            );
-                          },
+                            ),
                         ),
                       ),
 
@@ -390,8 +383,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildInfoRow({
     required IconData icon,
     required String label,
-  }) {
-    return Row(
+  }) => Row(
       children: [
         Icon(
           icon,
@@ -402,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Expanded(
           child: Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w500,
@@ -411,18 +403,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ],
     );
-  }
 
   Widget _buildCTAButton({
     required String label,
     required VoidCallback onPressed,
     required bool isPrimary,
     required IconData icon,
-  }) {
-    return Container(
+  }) => Container(
       decoration: BoxDecoration(
         gradient: isPrimary
-            ? LinearGradient(
+            ? const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
@@ -441,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         boxShadow: isPrimary
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -483,5 +473,4 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
 }

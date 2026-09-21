@@ -45,42 +45,42 @@ class AppColors {
 
 // Spacing
 class AppSpacing {
-  static const double xs = 4.0;
-  static const double small = 8.0;
-  static const double medium = 16.0;
-  static const double large = 24.0;
-  static const double xlarge = 32.0;
-  static const double xxlarge = 48.0;
+  static const double xs = 4;
+  static const double small = 8;
+  static const double medium = 16;
+  static const double large = 24;
+  static const double xlarge = 32;
+  static const double xxlarge = 48;
 }
 
 // Border Radius
 class AppRadius {
-  static const double small = 8.0;
-  static const double medium = 12.0;
-  static const double large = 16.0;
-  static const double xlarge = 20.0;
-  static const double circle = 50.0;
+  static const double small = 8;
+  static const double medium = 12;
+  static const double large = 16;
+  static const double xlarge = 20;
+  static const double circle = 50;
 }
 
 // Alternative name for consistency
 class AppBorderRadius {
-  static const double small = 8.0;
-  static const double medium = 12.0;
-  static const double large = 16.0;
-  static const double xlarge = 20.0;
-  static const double circle = 50.0;
+  static const double small = 8;
+  static const double medium = 12;
+  static const double large = 16;
+  static const double xlarge = 20;
+  static const double circle = 50;
 }
 
 // Font Sizes
 class AppFontSize {
-  static const double tiny = 10.0;
-  static const double small = 12.0;
-  static const double body = 14.0;
-  static const double subtitle = 16.0;
-  static const double title = 18.0;
-  static const double heading = 24.0;
-  static const double largeHeading = 32.0;
-  static const double extraLarge = 28.0;
+  static const double tiny = 10;
+  static const double small = 12;
+  static const double body = 14;
+  static const double subtitle = 16;
+  static const double title = 18;
+  static const double heading = 24;
+  static const double largeHeading = 32;
+  static const double extraLarge = 28;
 }
 
 // Font Weights
@@ -184,7 +184,7 @@ class ValidationPatterns {
 class AppShadows {
   static final List<BoxShadow> light = [
     BoxShadow(
-      color: AppColors.shadow.withOpacity(0.08),
+      color: AppColors.shadow.withValues(alpha: 0.08),
       blurRadius: 8,
       offset: const Offset(0, 2),
     ),
@@ -192,7 +192,7 @@ class AppShadows {
 
   static final List<BoxShadow> medium = [
     BoxShadow(
-      color: AppColors.shadow.withOpacity(0.12),
+      color: AppColors.shadow.withValues(alpha: 0.12),
       blurRadius: 12,
       offset: const Offset(0, 4),
     ),
@@ -200,7 +200,7 @@ class AppShadows {
 
   static final List<BoxShadow> heavy = [
     BoxShadow(
-      color: AppColors.shadow.withOpacity(0.16),
+      color: AppColors.shadow.withValues(alpha: 0.16),
       blurRadius: 16,
       offset: const Offset(0, 8),
     ),
@@ -231,20 +231,18 @@ class AppGradients {
     required List<Color> colors,
     Alignment begin = Alignment.topLeft,
     Alignment end = Alignment.bottomRight,
-  }) {
-    return LinearGradient(
+  }) => LinearGradient(
       begin: begin,
       end: end,
       colors: colors,
     );
-  }
 }
 
 // Button Styles
 class AppButtonStyles {
-  static const double primaryHeight = 56.0;
-  static const double secondaryHeight = 48.0;
-  static const double smallHeight = 40.0;
+  static const double primaryHeight = 56;
+  static const double secondaryHeight = 48;
+  static const double smallHeight = 40;
   static const double borderWidth = 1.5;
 }
 
@@ -255,8 +253,7 @@ class AppInputStyles {
     String? hint,
     IconData? prefixIcon,
     IconData? suffixIcon,
-  }) {
-    return InputDecoration(
+  }) => InputDecoration(
       label: Text(label),
       hintText: hint,
       prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
@@ -265,7 +262,6 @@ class AppInputStyles {
         borderRadius: BorderRadius.circular(AppRadius.medium),
       ),
     );
-  }
 }
 
 // Device Breakpoints

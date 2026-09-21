@@ -3,21 +3,18 @@ import '../models/salon.dart';
 import '../utils/constants.dart';
 
 class SalonCard extends StatelessWidget {
+
+  const SalonCard({
+    required this.salon, required this.onTap, Key? key,
+  }) : super(key: key);
   final Salon salon;
   final VoidCallback onTap;
 
-  const SalonCard({
-    Key? key,
-    required this.salon,
-    required this.onTap,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Card(
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: AppSpacing.medium,
           vertical: AppSpacing.small,
         ),
@@ -26,7 +23,7 @@ class SalonCard extends StatelessWidget {
           children: [
             // Salon name and status
             Padding(
-              padding: EdgeInsets.all(AppSpacing.medium),
+              padding: const EdgeInsets.all(AppSpacing.medium),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -36,17 +33,17 @@ class SalonCard extends StatelessWidget {
                       children: [
                         Text(
                           salon.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: AppFontSize.title,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: AppSpacing.small),
+                        const SizedBox(height: AppSpacing.small),
                         Text(
                           salon.address,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: AppFontSize.small,
                             color: AppColors.textSecondary,
                           ),
@@ -55,14 +52,14 @@ class SalonCard extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.medium,
                       vertical: AppSpacing.small,
                     ),
                     decoration: BoxDecoration(
                       color: salon.isOpen
-                          ? AppColors.success.withOpacity(0.1)
-                          : AppColors.error.withOpacity(0.1),
+                          ? AppColors.success.withValues(alpha: 0.1)
+                          : AppColors.error.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppRadius.small),
                     ),
                     child: Text(
@@ -79,18 +76,18 @@ class SalonCard extends StatelessWidget {
             ),
             // Rating
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.medium),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.medium),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.star,
                     color: Colors.amber,
                     size: 18,
                   ),
-                  SizedBox(width: AppSpacing.small),
+                  const SizedBox(width: AppSpacing.small),
                   Text(
                     '${salon.rating} (${salon.reviewCount} reviews)',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: AppFontSize.small,
                       color: AppColors.textSecondary,
                     ),
@@ -98,10 +95,9 @@ class SalonCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: AppSpacing.medium),
+            const SizedBox(height: AppSpacing.medium),
           ],
         ),
       ),
     );
-  }
 }

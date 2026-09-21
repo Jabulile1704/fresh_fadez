@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class AnimatedLoginButton extends StatefulWidget {
+
+  const AnimatedLoginButton({
+    required this.label, required this.isLoading, required this.onPressed, Key? key,
+    this.startColor,
+    this.endColor,
+  }) : super(key: key);
   final String label;
   final bool isLoading;
   final VoidCallback onPressed;
   final Color? startColor;
   final Color? endColor;
-
-  const AnimatedLoginButton({
-    Key? key,
-    required this.label,
-    required this.isLoading,
-    required this.onPressed,
-    this.startColor,
-    this.endColor,
-  }) : super(key: key);
 
   @override
   State<AnimatedLoginButton> createState() => _AnimatedLoginButtonState();
@@ -26,7 +23,6 @@ class _AnimatedLoginButtonState extends State<AnimatedLoginButton>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotateAnimation;
-  bool _isPressed = false;
 
   @override
   void initState() {
@@ -67,8 +63,7 @@ class _AnimatedLoginButtonState extends State<AnimatedLoginButton>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
@@ -80,9 +75,8 @@ class _AnimatedLoginButtonState extends State<AnimatedLoginButton>
             boxShadow: [
               BoxShadow(
                 color:
-                    (widget.startColor ?? AppColors.primary).withOpacity(0.4),
+                    (widget.startColor ?? AppColors.primary).withValues(alpha: 0.4),
                 blurRadius: 16,
-                spreadRadius: 0,
                 offset: const Offset(0, 8),
               ),
             ],
@@ -111,7 +105,6 @@ class _AnimatedLoginButtonState extends State<AnimatedLoginButton>
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
                     children: [
                       if (widget.isLoading)
                         RotationTransition(
@@ -123,11 +116,11 @@ class _AnimatedLoginButtonState extends State<AnimatedLoginButton>
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                                 width: 2,
                               ),
                             ),
-                            child: CircularProgressIndicator(
+                            child: const CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 Colors.white,
                               ),
@@ -136,8 +129,8 @@ class _AnimatedLoginButtonState extends State<AnimatedLoginButton>
                           ),
                         ),
                       Text(
-                        widget.isLoading ? "Processing..." : widget.label,
-                        style: TextStyle(
+                        widget.isLoading ? 'Processing...' : widget.label,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -153,5 +146,4 @@ class _AnimatedLoginButtonState extends State<AnimatedLoginButton>
         ),
       ),
     );
-  }
 }

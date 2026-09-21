@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
+
 import '../utils/constants.dart';
-import '../routes/app_routes.dart' hide AppRoutes;
 
 class CustomBottomNavBar extends StatelessWidget {
+
+  const CustomBottomNavBar({
+    required this.currentIndex, required this.onTabChanged, Key? key,
+  }) : super(key: key);
   final int currentIndex;
   final Function(int) onTabChanged;
 
-  const CustomBottomNavBar({
-    Key? key,
-    required this.currentIndex,
-    required this.onTabChanged,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow.withOpacity(0.1),
+            color: AppColors.shadow.withValues(alpha: 0.1),
             blurRadius: 12,
-            spreadRadius: 0,
             offset: const Offset(0, -4),
           ),
         ],
@@ -51,7 +47,7 @@ class CustomBottomNavBar extends StatelessWidget {
               context: context,
             ),
             // Center Space for FAB
-            SizedBox(width: 60),
+            const SizedBox(width: 60),
             // Appointments
             _buildNavItem(
               icon: Icons.calendar_month_outlined,
@@ -70,7 +66,6 @@ class CustomBottomNavBar extends StatelessWidget {
         ),
       ),
     );
-  }
 
   Widget _buildNavItem({
     required IconData icon,
@@ -78,7 +73,7 @@ class CustomBottomNavBar extends StatelessWidget {
     required int index,
     required BuildContext context,
   }) {
-    bool isSelected = currentIndex == index;
+    final isSelected = currentIndex == index;
 
     return GestureDetector(
       onTap: () {
@@ -92,7 +87,7 @@ class CustomBottomNavBar extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.small),
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.primary.withOpacity(0.1)
+                  ? AppColors.primary.withValues(alpha: 0.1)
                   : Colors.transparent,
               shape: BoxShape.circle,
             ),

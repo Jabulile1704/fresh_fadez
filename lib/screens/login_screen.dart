@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../utils/constants.dart';
 import '../widgets/animated_login_button.dart';
-
-import '../routes/app_routes.dart' hide AppRoutes;
 import '../widgets/custom_text_filed.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -58,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     _slideController.forward();
   }
 
-  void handleLogin() async {
+  Future<void> handleLogin() async {
     if (_formKey.currentState!.validate()) {
       setState(() => isLoading = true);
 
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       setState(() => isLoading = false);
 
       if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        unawaited(Navigator.pushReplacementNamed(context, AppRoutes.home));
       }
     }
   }
@@ -91,13 +92,12 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: FadeTransition(
               opacity: _fadeAnimation,
               child: SlideTransition(
@@ -117,19 +117,19 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             end: Alignment.bottomRight,
                             colors: [
                               AppColors.primary,
-                              AppColors.primary.withOpacity(0.7),
+                              AppColors.primary.withValues(alpha: 0.7),
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.3),
+                              color: AppColors.primary.withValues(alpha: 0.3),
                               blurRadius: 20,
                               spreadRadius: 2,
                             ),
                           ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(20),
                           child: Icon(
                             Icons.lock_outline,
                             size: 60,
@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     const SizedBox(height: 40),
 
                     // App title and subtitle
-                    Text(
+                    const Text(
                       appName,
                       style: TextStyle(
                         fontSize: AppFontSize.heading,
@@ -155,8 +155,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     const SizedBox(height: 8),
 
                     Text(
-                      isSignUp ? "Create your account" : "Welcome back",
-                      style: TextStyle(
+                      isSignUp ? 'Create your account' : 'Welcome back',
+                      style: const TextStyle(
                         fontSize: 16,
                         color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
@@ -173,17 +173,17 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           // Email field
                           CustomTextField(
                             controller: _emailController,
-                            label: "Email",
-                            hint: "Enter your email",
+                            label: 'Email',
+                            hint: 'Enter your email',
                             icon: Icons.email_outlined,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Email is required";
+                                return 'Email is required';
                               }
                               if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
                                   .hasMatch(value)) {
-                                return "Please enter a valid email";
+                                return 'Please enter a valid email';
                               }
                               return null;
                             },
@@ -194,8 +194,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           // Password field
                           CustomTextField(
                             controller: _passwordController,
-                            label: "Password",
-                            hint: "Enter your password",
+                            label: 'Password',
+                            hint: 'Enter your password',
                             icon: Icons.lock_outline,
                             obscureText: _obscurePassword,
                             suffixIcon: IconButton(
@@ -212,10 +212,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Password is required";
+                                return 'Password is required';
                               }
                               if (isSignUp && value.length < 6) {
-                                return "Password must be at least 6 characters";
+                                return 'Password must be at least 6 characters';
                               }
                               return null;
                             },
@@ -231,8 +231,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 onPressed: () {
                                   // Handle forgot password
                                 },
-                                child: Text(
-                                  "Forgot password?",
+                                child: const Text(
+                                  'Forgot password?',
                                   style: TextStyle(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.w600,
@@ -246,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
                           // Animated gradient login button
                           AnimatedLoginButton(
-                            label: isSignUp ? "Sign Up" : "Login",
+                            label: isSignUp ? 'Sign Up' : 'Login',
                             isLoading: isLoading,
                             onPressed: handleLogin,
                           ),
@@ -259,9 +259,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             children: [
                               Text(
                                 isSignUp
-                                    ? "Already have an account? "
+                                    ? 'Already have an account? '
                                     : "Don't have an account? ",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.textSecondary,
                                   fontSize: 14,
                                 ),
@@ -269,8 +269,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               GestureDetector(
                                 onTap: toggleAuthMode,
                                 child: Text(
-                                  isSignUp ? "Login" : "Sign Up",
-                                  style: TextStyle(
+                                  isSignUp ? 'Login' : 'Sign Up',
+                                  style: const TextStyle(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
@@ -292,5 +292,4 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         ),
       ),
     );
-  }
 }

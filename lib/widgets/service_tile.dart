@@ -3,29 +3,26 @@ import '../models/service.dart';
 import '../utils/constants.dart';
 
 class ServiceTile extends StatelessWidget {
+
+  const ServiceTile({
+    required this.service, required this.onTap, Key? key,
+    this.isSelected = false,
+  }) : super(key: key);
   final Service service;
   final VoidCallback onTap;
   final bool isSelected;
 
-  const ServiceTile({
-    Key? key,
-    required this.service,
-    required this.onTap,
-    this.isSelected = false,
-  }) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: AppSpacing.medium,
           vertical: AppSpacing.small,
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withOpacity(0.1)
+              ? AppColors.primary.withValues(alpha: 0.1)
               : AppColors.surface,
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.border,
@@ -36,7 +33,7 @@ class ServiceTile extends StatelessWidget {
         child: ListTile(
           title: Text(
             service.name,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: AppFontSize.subtitle,
               fontWeight: FontWeight.w600,
             ),
@@ -45,17 +42,16 @@ class ServiceTile extends StatelessWidget {
             service.description,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: AppFontSize.small,
               color: AppColors.textSecondary,
             ),
           ),
           trailing: isSelected
-              ? Icon(Icons.check_circle, color: AppColors.primary)
+              ? const Icon(Icons.check_circle, color: AppColors.primary)
               : null,
           onTap: onTap,
         ),
       ),
     );
-  }
 }

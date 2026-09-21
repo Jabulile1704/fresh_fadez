@@ -3,14 +3,12 @@ import 'package:flutter/services.dart';
 import '../utils/constants.dart';
 
 class StaffCard extends StatefulWidget {
-  final Map<String, dynamic> staff;
-  final VoidCallback onTap;
 
   const StaffCard({
-    Key? key,
-    required this.staff,
-    required this.onTap,
+    required this.staff, required this.onTap, Key? key,
   }) : super(key: key);
+  final Map<String, dynamic> staff;
+  final VoidCallback onTap;
 
   @override
   State<StaffCard> createState() => _StaffCardState();
@@ -54,8 +52,7 @@ class _StaffCardState extends State<StaffCard>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
+  Widget build(BuildContext context) => MouseRegion(
       onEnter: _onEnter,
       onExit: _onExit,
       child: ScaleTransition(
@@ -64,16 +61,14 @@ class _StaffCardState extends State<StaffCard>
           onTap: widget.onTap,
           child: AnimatedBuilder(
             animation: _elevationAnimation,
-            builder: (context, child) {
-              return Container(
+            builder: (context, child) => Container(
                 width: 160,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppBorderRadius.large),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: _elevationAnimation.value,
-                      spreadRadius: 0,
                       offset: Offset(0, _elevationAnimation.value * 0.5),
                     ),
                   ],
@@ -88,7 +83,6 @@ class _StaffCardState extends State<StaffCard>
                     child: Padding(
                       padding: const EdgeInsets.all(AppSpacing.xs),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Profile image
                           Container(
@@ -100,19 +94,19 @@ class _StaffCardState extends State<StaffCard>
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  AppColors.primary.withOpacity(0.6),
-                                  AppColors.primaryDark.withOpacity(0.6),
+                                  AppColors.primary.withValues(alpha: 0.6),
+                                  AppColors.primaryDark.withValues(alpha: 0.6),
                                 ],
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.2),
+                                  color: AppColors.primary.withValues(alpha: 0.2),
                                   blurRadius: 8,
                                   spreadRadius: 1,
                                 ),
                               ],
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Icon(
                                 Icons.person_outline,
                                 size: 50,
@@ -127,7 +121,7 @@ class _StaffCardState extends State<StaffCard>
                           Text(
                             widget.staff['name'],
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary,
@@ -142,7 +136,7 @@ class _StaffCardState extends State<StaffCard>
                           Text(
                             widget.staff['title'],
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondary,
                             ),
@@ -159,7 +153,7 @@ class _StaffCardState extends State<StaffCard>
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(
                                 AppBorderRadius.small,
                               ),
@@ -167,7 +161,7 @@ class _StaffCardState extends State<StaffCard>
                             child: Text(
                               widget.staff['specialty'],
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 10,
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w600,
@@ -183,7 +177,7 @@ class _StaffCardState extends State<StaffCard>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.star,
                                 size: 12,
                                 color: Colors.amber,
@@ -191,7 +185,7 @@ class _StaffCardState extends State<StaffCard>
                               const SizedBox(width: 2),
                               Text(
                                 '${widget.staff['rating']}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textPrimary,
@@ -200,7 +194,7 @@ class _StaffCardState extends State<StaffCard>
                               const SizedBox(width: 2),
                               Text(
                                 '(${widget.staff['reviews']})',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 10,
                                   color: AppColors.textSecondary,
                                 ),
@@ -213,7 +207,7 @@ class _StaffCardState extends State<StaffCard>
                           // Experience
                           Text(
                             widget.staff['experience'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 10,
                               color: AppColors.textSecondary,
                               fontStyle: FontStyle.italic,
@@ -224,11 +218,9 @@ class _StaffCardState extends State<StaffCard>
                     ),
                   ),
                 ),
-              );
-            },
+              ),
           ),
         ),
       ),
     );
-  }
 }

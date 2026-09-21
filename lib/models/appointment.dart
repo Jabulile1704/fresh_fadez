@@ -1,14 +1,4 @@
 class Appointment {
-  final String id;
-  final String userId;
-  final String salonId;
-  final String serviceName;
-  final String stylistName;
-  final DateTime appointmentDate;
-  final String appointmentTime;
-  final String status;
-  final double totalPrice;
-  final String notes;
 
   const Appointment({
     required this.id,
@@ -22,6 +12,16 @@ class Appointment {
     required this.totalPrice,
     this.notes = '',
   });
+  final String id;
+  final String userId;
+  final String salonId;
+  final String serviceName;
+  final String stylistName;
+  final DateTime appointmentDate;
+  final String appointmentTime;
+  final String status;
+  final double totalPrice;
+  final String notes;
 
   String get formattedDate {
     final date = appointmentDate;

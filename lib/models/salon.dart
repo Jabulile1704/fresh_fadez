@@ -1,15 +1,4 @@
 class Salon {
-  final String id;
-  final String name;
-  final String description;
-  final String address;
-  final String city;
-  final String phone;
-  final String imageUrl;
-  final double rating;
-  final int reviewCount;
-  final bool isOpen;
-  final List<String> services;
 
   const Salon({
     required this.id,
@@ -24,6 +13,17 @@ class Salon {
     this.isOpen = true,
     this.services = const [],
   });
+  final String id;
+  final String name;
+  final String description;
+  final String address;
+  final String city;
+  final String phone;
+  final String imageUrl;
+  final double rating;
+  final int reviewCount;
+  final bool isOpen;
+  final List<String> services;
 
   String get fullAddress => '$address, $city';
 

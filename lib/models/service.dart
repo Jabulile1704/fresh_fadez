@@ -1,11 +1,4 @@
 class Service {
-  final String id;
-  final String name;
-  final String description;
-  final String category;
-  final double price;
-  final int durationMinutes;
-  final double rating;
 
   const Service({
     required this.id,
@@ -16,6 +9,13 @@ class Service {
     required this.durationMinutes,
     this.rating = 0.0,
   });
+  final String id;
+  final String name;
+  final String description;
+  final String category;
+  final double price;
+  final int durationMinutes;
+  final double rating;
 
   String get formattedPrice => '\$$price';
 
