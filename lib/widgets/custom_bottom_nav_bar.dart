@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../routes/app_routes.dart';
 import '../utils/constants.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
 
   const CustomBottomNavBar({
-    required this.currentIndex, required this.onTabChanged, Key? key,
-  }) : super(key: key);
+    required this.currentIndex, required this.onTabChanged, super.key,
+  });
   final int currentIndex;
   final Function(int) onTabChanged;
 

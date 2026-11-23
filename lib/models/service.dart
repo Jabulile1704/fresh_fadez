@@ -1,3 +1,5 @@
+import '../utils/money.dart';
+
 class Service {
 
   const Service({
@@ -17,7 +19,7 @@ class Service {
   final int durationMinutes;
   final double rating;
 
-  String get formattedPrice => '\$$price';
+  String get formattedPrice => Money.fromRand(price);
 
   String get formattedDuration {
     if (durationMinutes < 60) {

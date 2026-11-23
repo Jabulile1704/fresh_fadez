@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class StaffScreen extends StatefulWidget {
-  const StaffScreen({Key? key}) : super(key: key);
+  const StaffScreen({super.key});
 
   @override
   State<StaffScreen> createState() => _StaffScreenState();
@@ -67,7 +67,7 @@ class _StaffScreenState extends State<StaffScreen> {
       margin: const EdgeInsets.only(bottom: AppSpacing.medium),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        borderRadius: BorderRadius.circular(AppRadius.large),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -180,7 +180,7 @@ class _StaffScreenState extends State<StaffScreen> {
               ),
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(AppBorderRadius.small),
+                borderRadius: BorderRadius.circular(AppRadius.small),
               ),
               child: Text(
                 '${staff['experience']} of experience',
@@ -209,7 +209,7 @@ class _StaffScreenState extends State<StaffScreen> {
                     vertical: AppSpacing.small,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+                    borderRadius: BorderRadius.circular(AppRadius.medium),
                   ),
                 ),
                 child: const Text(

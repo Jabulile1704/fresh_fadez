@@ -4,8 +4,8 @@ import '../utils/constants.dart';
 class ServiceCard extends StatefulWidget {
 
   const ServiceCard({
-    required this.service, required this.onTap, Key? key,
-  }) : super(key: key);
+    required this.service, required this.onTap, super.key,
+  });
   final Map<String, dynamic> service;
   final VoidCallback onTap;
 
@@ -59,7 +59,7 @@ class _ServiceCardState extends State<ServiceCard>
         scale: _scaleAnimation,
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppBorderRadius.large),
+            borderRadius: BorderRadius.circular(AppRadius.large),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.08),
@@ -69,11 +69,11 @@ class _ServiceCardState extends State<ServiceCard>
             ],
           ),
           child: Material(
-            borderRadius: BorderRadius.circular(AppBorderRadius.large),
+            borderRadius: BorderRadius.circular(AppRadius.large),
             color: AppColors.surface,
             child: InkWell(
               onTap: widget.onTap,
-              borderRadius: BorderRadius.circular(AppBorderRadius.large),
+              borderRadius: BorderRadius.circular(AppRadius.large),
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.xs),
                 child: Column(
@@ -92,7 +92,7 @@ class _ServiceCardState extends State<ServiceCard>
                           ],
                         ),
                         borderRadius:
-                            BorderRadius.circular(AppBorderRadius.medium),
+                            BorderRadius.circular(AppRadius.medium),
                       ),
                       padding: const EdgeInsets.all(12),
                       child: Icon(
@@ -137,7 +137,7 @@ class _ServiceCardState extends State<ServiceCard>
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.08),
                         borderRadius:
-                            BorderRadius.circular(AppBorderRadius.small),
+                            BorderRadius.circular(AppRadius.small),
                       ),
                       child: Column(
                         children: [

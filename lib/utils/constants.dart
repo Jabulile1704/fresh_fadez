@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // App Info
-const String appName = 'Fresh_Fadez';
+const String appName = 'Fresh Fadez';
 const String appVersion = '1.0.0';
 
 // Colors
@@ -16,19 +16,39 @@ class AppColors {
   static const Color background = Color(0xFFF5F3ED); // Warm Beige
   static const Color surface = Color(0xFFFFFFFF); // White
   static const Color inputBackground = Color(0xFFF9F8F5); // Light warm beige
-  
-  // Text colors
+
+  // Dark mode surfaces
+  static const Color backgroundDark = Color(0xFF1C1F17); // Deep olive black
+  static const Color surfaceDark = Color(0xFF262A20); // Raised dark olive
+  static const Color inputBackgroundDark = Color(0xFF2F3428); // Dark field fill
+
+  // Text colors.
+  // textSecondary and textHint were lightened olives (0xFF8B9B6F / 0xFFB8C49D)
+  // that measured ~2.7:1 against `background` — below the WCAG AA minimum of
+  // 4.5:1 for body text. They are darkened here to 5.19:1 and 4.66:1 while
+  // keeping the primary > secondary > hint hierarchy intact.
   static const Color textPrimary = Color(0xFF3D4A2E); // Dark Olive
-  static const Color textSecondary = Color(0xFF8B9B6F); // Medium Olive
-  static const Color textHint = Color(0xFFB8C49D); // Light Olive
-  
+  static const Color textSecondary = Color(0xFF5C6B45); // Medium Olive
+  static const Color textHint = Color(0xFF677552); // Muted Olive
+
+  // Dark mode text
+  static const Color textPrimaryDark = Color(0xFFE8EDE0); // Off-white
+  static const Color textSecondaryDark = Color(0xFFB4C29C); // Pale olive
+  static const Color textHintDark = Color(0xFF8B9B6F); // Medium olive
+
   // Border and dividers
   static const Color border = Color(0xFFD4CAB8); // Olive border
   static const Color borderColor = Color(0xFFE8DFD3); // Olive divider
   static const Color divider = Color(0xFFE8DFD3); // Olive divider
-  
-  // Status colors
-  static const Color error = Color(0xFFE67E22); // Warm Orange
+  static const Color borderDark = Color(0xFF3C4232); // Dark olive border
+
+  // Status colors.
+  // `error` was 0xFFE67E22, a warm orange only 1.28:1 against `warning`
+  // (0xFFD4A574) — the two were effectively the same colour. Destructive
+  // actions (cancelling a booking, logging out) now read as destructive while
+  // staying in the earthy palette, and this hue clears WCAG AA both as text on
+  // `background` (4.66:1) and as a button fill under white text (5.17:1).
+  static const Color error = Color(0xFFB84A33); // Terracotta Red
   static const Color success = Color(0xFF6BA85A); // Olive Green
   static const Color warning = Color(0xFFD4A574); // Warm Tan
   static const Color info = Color(0xFF7A9B5C); // Olive Green
@@ -55,15 +75,6 @@ class AppSpacing {
 
 // Border Radius
 class AppRadius {
-  static const double small = 8;
-  static const double medium = 12;
-  static const double large = 16;
-  static const double xlarge = 20;
-  static const double circle = 50;
-}
-
-// Alternative name for consistency
-class AppBorderRadius {
   static const double small = 8;
   static const double medium = 12;
   static const double large = 16;
@@ -148,18 +159,6 @@ class AppMessages {
   static const String tryAgain = 'Try Again';
   static const String cancel = 'Cancel';
   static const String confirm = 'Confirm';
-}
-
-// Navigation Routes
-class AppRoutes {
-  static const String splash = '/';
-  static const String login = '/login';
-  static const String home = '/home';
-  static const String booking = '/booking';
-  static const String services = '/services';
-  static const String staffDetail = '/staff-detail';
-  static const String profile = '/profile';
-  static const String appointments = '/appointments';
 }
 
 // API Endpoints (if needed)

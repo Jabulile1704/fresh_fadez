@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../routes/app_routes.dart';
 import '../utils/constants.dart';
 import '../widgets/salon_header.dart';
 import '../widgets/service_card.dart';
 import '../widgets/staff_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -346,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                       // Staff Horizontal Scroll
                       SizedBox(
-                        height: 200,
+                        height: 236,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: staffMembers.length,
@@ -427,7 +428,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 color: AppColors.primary,
                 width: 1.5,
               ),
-        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+        borderRadius: BorderRadius.circular(AppRadius.medium),
         boxShadow: isPrimary
             ? [
                 BoxShadow(
@@ -442,7 +443,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+          borderRadius: BorderRadius.circular(AppRadius.medium),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 12,

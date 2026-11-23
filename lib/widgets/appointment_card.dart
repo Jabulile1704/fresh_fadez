@@ -5,8 +5,8 @@ import '../utils/constants.dart';
 class AppointmentCard extends StatelessWidget {
 
   const AppointmentCard({
-    required this.appointment, required this.onTap, Key? key,
-  }) : super(key: key);
+    required this.appointment, required this.onTap, super.key,
+  });
   final Appointment appointment;
   final VoidCallback onTap;
 

@@ -4,8 +4,8 @@ import '../utils/constants.dart';
 class SalonHeader extends StatelessWidget {
 
   const SalonHeader({
-    required this.salonInfo, Key? key,
-  }) : super(key: key);
+    required this.salonInfo, super.key,
+  });
   final Map<String, dynamic> salonInfo;
 
   @override
@@ -59,7 +59,7 @@ class SalonHeader extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+                  borderRadius: BorderRadius.circular(AppRadius.medium),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.1),

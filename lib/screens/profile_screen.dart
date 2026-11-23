@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../routes/app_routes.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_button.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -16,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromARGB(96, 31, 139, 7),
+                color: AppColors.primary,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(AppRadius.large),
                   bottomRight: Radius.circular(AppRadius.large),
@@ -31,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
                       width: 100,
                       height: 100,
                       decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 248, 133, 2),
+                        color: AppColors.accent,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -170,7 +171,7 @@ class ProfileScreen extends StatelessWidget {
       children: [
         Icon(
           icon,
-          color: const Color.fromARGB(96, 31, 139, 7),
+          color: AppColors.primary,
           size: 24,
         ),
         const SizedBox(width: AppSpacing.medium),
@@ -209,7 +210,7 @@ class ProfileScreen extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: const Color.fromARGB(96, 31, 139, 7),
+              color: AppColors.primary,
               size: 24,
             ),
             const SizedBox(width: AppSpacing.medium),

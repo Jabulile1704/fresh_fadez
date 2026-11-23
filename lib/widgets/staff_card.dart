@@ -5,8 +5,8 @@ import '../utils/constants.dart';
 class StaffCard extends StatefulWidget {
 
   const StaffCard({
-    required this.staff, required this.onTap, Key? key,
-  }) : super(key: key);
+    required this.staff, required this.onTap, super.key,
+  });
   final Map<String, dynamic> staff;
   final VoidCallback onTap;
 
@@ -64,7 +64,7 @@ class _StaffCardState extends State<StaffCard>
             builder: (context, child) => Container(
                 width: 160,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                  borderRadius: BorderRadius.circular(AppRadius.large),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.1),
@@ -74,20 +74,20 @@ class _StaffCardState extends State<StaffCard>
                   ],
                 ),
                 child: Material(
-                  borderRadius: BorderRadius.circular(AppBorderRadius.large),
+                  borderRadius: BorderRadius.circular(AppRadius.large),
                   color: AppColors.surface,
                   child: InkWell(
                     onTap: widget.onTap,
                     borderRadius:
-                        BorderRadius.circular(AppBorderRadius.large),
+                        BorderRadius.circular(AppRadius.large),
                     child: Padding(
                       padding: const EdgeInsets.all(AppSpacing.xs),
                       child: Column(
                         children: [
                           // Profile image
                           Container(
-                            width: 100,
-                            height: 100,
+                            width: 80,
+                            height: 80,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               gradient: LinearGradient(
@@ -109,7 +109,7 @@ class _StaffCardState extends State<StaffCard>
                             child: const Center(
                               child: Icon(
                                 Icons.person_outline,
-                                size: 50,
+                                size: 40,
                                 color: Colors.white,
                               ),
                             ),
@@ -126,7 +126,7 @@ class _StaffCardState extends State<StaffCard>
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary,
                             ),
-                            maxLines: 2,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
 
@@ -155,7 +155,7 @@ class _StaffCardState extends State<StaffCard>
                             decoration: BoxDecoration(
                               color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(
-                                AppBorderRadius.small,
+                                AppRadius.small,
                               ),
                             ),
                             child: Text(

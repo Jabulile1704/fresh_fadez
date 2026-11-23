@@ -4,10 +4,10 @@ import '../utils/constants.dart';
 class AnimatedLoginButton extends StatefulWidget {
 
   const AnimatedLoginButton({
-    required this.label, required this.isLoading, required this.onPressed, Key? key,
+    required this.label, required this.isLoading, required this.onPressed, super.key,
     this.startColor,
     this.endColor,
-  }) : super(key: key);
+  });
   final String label;
   final bool isLoading;
   final VoidCallback onPressed;

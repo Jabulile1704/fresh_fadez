@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../routes/app_routes.dart';
 import '../screens/home_screen.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 class AppNavigationWrapper extends StatefulWidget {
-  const AppNavigationWrapper({Key? key}) : super(key: key);
+  const AppNavigationWrapper({super.key});
 
   @override
   State<AppNavigationWrapper> createState() => _AppNavigationWrapperState();
@@ -80,7 +81,7 @@ class _AppNavigationWrapperState extends State<AppNavigationWrapper> {
           onTap: () {
             Navigator.pushNamed(context, AppRoutes.booking);
           },
-          borderRadius: BorderRadius.circular(AppBorderRadius.circle),
+          borderRadius: BorderRadius.circular(AppRadius.circle),
           child: const Padding(
             padding: EdgeInsets.all(AppSpacing.medium),
             child: Column(

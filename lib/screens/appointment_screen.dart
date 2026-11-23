@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class AppointmentsScreen extends StatefulWidget {
-  const AppointmentsScreen({Key? key}) : super(key: key);
+  const AppointmentsScreen({super.key});
 
   @override
   State<AppointmentsScreen> createState() => _AppointmentsScreenState();
@@ -85,7 +85,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 vertical: AppSpacing.medium,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+                borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
             ),
             child: const Text(
@@ -109,7 +109,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
       margin: const EdgeInsets.only(bottom: AppSpacing.medium),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        borderRadius: BorderRadius.circular(AppRadius.large),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -143,7 +143,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                   decoration: BoxDecoration(
                     color: statusColor.withValues(alpha: 0.1),
                     borderRadius:
-                        BorderRadius.circular(AppBorderRadius.small),
+                        BorderRadius.circular(AppRadius.small),
                   ),
                   child: Text(
                     appointment['status'].toUpperCase(),

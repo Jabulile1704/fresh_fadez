@@ -1,3 +1,5 @@
+import '../utils/money.dart';
+
 class Appointment {
 
   const Appointment({
@@ -28,7 +30,7 @@ class Appointment {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  String get formattedPrice => '\$${totalPrice.toStringAsFixed(2)}';
+  String get formattedPrice => Money.fromRand(totalPrice);
 
   bool get isUpcoming {
     final now = DateTime.now();
