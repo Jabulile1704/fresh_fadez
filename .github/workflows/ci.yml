@@ -57,3 +57,65 @@ jobs:
 
       - name: Test
         run: flutter test --reporter expanded
+
+  server:
+    name: Server — build & test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: server
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fresh_fadez_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fresh_fadez_test?schema=public
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fresh_fadez_test?schema=public
+      JWT_ACCESS_SECRET: ci-access-secret-at-least-32-characters-long
+      JWT_REFRESH_SECRET: ci-refresh-secret-at-least-32-characters-long
+      NODE_ENV: test
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The booking guarantee is a btree_gist exclusion constraint, so the
+      # schema has to be really applied — the tests assert the constraint
+      # exists and fail loudly if it does not.
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      # The database tests skip themselves when TEST_DATABASE_URL is unset.
+      # That is sensible locally and dangerous in CI: a misconfigured job
+      # would report success having tested nothing. Fail on the skip.
+      - name: Test
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee test-output.txt
+          if grep -q "skipping database tests" test-output.txt; then
+            echo "::error::Database tests were skipped — TEST_DATABASE_URL is not reaching them."
+            exit 1
+          fi

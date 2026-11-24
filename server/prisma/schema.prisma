@@ -1,0 +1,255 @@
+// Fresh Fadez — data model for a single salon (After8 Hair Salon, Bloemfontein).
+//
+// Two conventions run through the whole schema:
+//
+//   * Money is integer cents (ZAR). R45,00 is 4500. No floats touch a price,
+//     ever, so totals are exact and the app formats them for display.
+//   * Durations are whole minutes, and times-of-day are "minutes from local
+//     midnight" (0..1440). A 09:00 open is 540. That keeps opening hours free
+//     of timezone and DST questions, which only matter when a *specific*
+//     instant is meant — and for those we store real `DateTime` (timestamptz).
+//
+// Weekdays are JavaScript's: 0 = Sunday .. 6 = Saturday.
+//
+// Every `DateTime` is `@db.Timestamptz(3)` rather than Prisma's default
+// `timestamp(3)`. Storing an instant without its zone is wrong on its own
+// terms, and here it is also load-bearing: the appointment exclusion
+// constraint builds a `tstzrange` from `startsAt`/`endsAt`, and over plain
+// `timestamp` columns that needs an implicit cast which PostgreSQL rates
+// STABLE — so the constraint is rejected outright with "functions in index
+// expression must be marked IMMUTABLE". Changing these column types is not a
+// style preference; it breaks the double-booking guarantee.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  STYLIST
+  OWNER
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+/// Every human who signs in: clients, stylists and the owner alike. Staff are
+/// Users with role STYLIST/OWNER; a stylist's professional profile hangs off
+/// this row as a separate `Stylist`, because a stylist who leaves keeps their
+/// appointment history while losing their bookable profile.
+model User {
+  id           String  @id @default(uuid())
+  email        String  @unique
+  passwordHash String
+  fullName     String
+  phone        String?
+  role         Role    @default(CLIENT)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  stylist        Stylist?
+  appointments   Appointment[]
+  reviews        Review[]
+  refreshTokens  RefreshToken[]
+  passwordResets PasswordResetToken[]
+
+  @@index([role])
+}
+
+/// Refresh tokens are stored hashed, so a database dump cannot be replayed as
+/// a login. One row per issued token lets us revoke a single device and lets
+/// `/auth/refresh` rotate: the old row is revoked as the new one is written.
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime @db.Timestamptz(3)
+  revokedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// Single-use, short-lived, and hashed for the same reason as the above.
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime @db.Timestamptz(3)
+  usedAt    DateTime? @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// The bookable professional. `active = false` hides a stylist from booking
+/// without deleting the appointments that reference them.
+model Stylist {
+  id              String  @id @default(uuid())
+  userId          String  @unique
+  title           String
+  specialization  String
+  bio             String?
+  experienceYears Int     @default(0)
+  rating          Float   @default(0)
+  reviewCount     Int     @default(0)
+  imageAsset      String?
+  active          Boolean @default(true)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services     StylistService[]
+  schedules    StylistSchedule[]
+  timeOff      TimeOff[]
+  appointments Appointment[]
+  reviews      Review[]
+}
+
+model Service {
+  id              String  @id @default(uuid())
+  name            String  @unique
+  description     String
+  category        String
+  priceCents      Int
+  durationMinutes Int
+  imageAsset      String?
+  active          Boolean @default(true)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  stylists     StylistService[]
+  appointments Appointment[]
+
+  @@index([category])
+}
+
+/// Which stylist performs which service. A service with no stylists attached
+/// is unbookable by construction — availability has nobody to offer.
+model StylistService {
+  stylistId String
+  serviceId String
+
+  stylist Stylist @relation(fields: [stylistId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@id([stylistId, serviceId])
+  @@index([serviceId])
+}
+
+/// When the salon itself is open. One row per weekday; `isClosed` marks a day
+/// the doors do not open at all, and then the minutes are ignored.
+model BusinessHours {
+  id          String  @id @default(uuid())
+  weekday     Int     @unique
+  isClosed    Boolean @default(false)
+  openMinute  Int     @default(540)
+  closeMinute Int     @default(1200)
+}
+
+/// A stylist's own weekly working hours, narrower than (or equal to) the
+/// salon's. Several rows may share a weekday, which is how a split shift or a
+/// lunch break is expressed: 09:00–13:00 and 14:00–18:00 are two rows, and the
+/// hour between them is simply not offered.
+model StylistSchedule {
+  id           String @id @default(uuid())
+  stylistId    String
+  weekday      Int
+  startMinute  Int
+  endMinute    Int
+
+  stylist Stylist @relation(fields: [stylistId], references: [id], onDelete: Cascade)
+
+  @@unique([stylistId, weekday, startMinute])
+  @@index([stylistId, weekday])
+}
+
+/// Leave, training, a dentist appointment. Absolute instants, because time off
+/// is a real-world span and may cross midnight or run for a fortnight.
+model TimeOff {
+  id        String   @id @default(uuid())
+  stylistId String
+  startsAt  DateTime @db.Timestamptz(3)
+  endsAt    DateTime @db.Timestamptz(3)
+  reason    String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  stylist Stylist @relation(fields: [stylistId], references: [id], onDelete: Cascade)
+
+  @@index([stylistId, startsAt])
+}
+
+/// A booking. `startsAt`/`endsAt` are real instants (timestamptz), not a date
+/// plus a label, so overlap is a question the database itself can answer.
+///
+/// `priceCents` and `durationMinutes` are copied from the Service at booking
+/// time: raising the price of a haircut must not silently reprice bookings
+/// already in the diary.
+///
+/// Double-booking is prevented by a PostgreSQL exclusion constraint on
+/// (stylistId, tstzrange(startsAt, endsAt)) over the statuses that occupy the
+/// chair — see `migrations/*_appointment_no_overlap`. Prisma cannot express
+/// that, so it is added by raw SQL in a migration and is invisible here.
+model Appointment {
+  id              String            @id @default(uuid())
+  userId          String
+  stylistId       String
+  serviceId       String
+  startsAt        DateTime @db.Timestamptz(3)
+  endsAt          DateTime @db.Timestamptz(3)
+  status          AppointmentStatus @default(PENDING)
+  priceCents      Int
+  durationMinutes Int
+  notes           String?
+
+  cancelledAt        DateTime? @db.Timestamptz(3)
+  cancellationReason String?
+  cancelledByUserId  String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stylist Stylist @relation(fields: [stylistId], references: [id], onDelete: Restrict)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  review  Review?
+
+  @@index([stylistId, startsAt])
+  @@index([userId, startsAt])
+  @@index([status, startsAt])
+}
+
+/// One review per completed appointment, which is what stops a stylist's
+/// rating from being voted on by someone who never sat in the chair.
+model Review {
+  id            String   @id @default(uuid())
+  appointmentId String   @unique
+  userId        String
+  stylistId     String
+  rating        Int
+  comment       String?
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stylist     Stylist     @relation(fields: [stylistId], references: [id], onDelete: Cascade)
+
+  @@index([stylistId, createdAt])
+}

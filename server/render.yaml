@@ -1,0 +1,93 @@
+# Render blueprint for the Fresh Fadez API.
+#
+# NOTE ON LOCATION: Render reads `render.yaml` from the repository root. This
+# copy lives in `server/` because the backend work was scoped to this
+# directory; move or symlink it to the repo root before creating the
+# Blueprint. `rootDir: server` below is already written relative to the repo
+# root, so the file needs no edits when it moves.
+#
+# A plain long-lived Node process plus a managed Postgres — no serverless
+# adapter and no vendor-specific entry point, because the API is an ordinary
+# Express server and the availability engine is ordinary arithmetic.
+#
+# Two things about the free plan are worth knowing before the app ships:
+#
+#   * Free web instances sleep after ~15 minutes idle and take roughly a
+#     minute to wake. The app surfaces that as "Cannot reach the salon".
+#     Point a free uptime pinger at `/` every 10 minutes to keep it warm; the
+#     health check deliberately opens no database connection, so pinging it
+#     costs nothing.
+#   * Free Postgres expires after 30 days and allows very few connections.
+#     That is the reason `src/lib/prisma.ts` keeps exactly one client: two
+#     clients is a server that works locally and runs out of connections here.
+#
+# Deploying: push this file, create a Blueprint from the repo, then set the
+# two JWT secrets in the dashboard (they are `generateValue: true`, so Render
+# makes them — but take note of them if the app ever needs a second service
+# that verifies the same tokens). `migrate deploy` runs as part of the build,
+# so a deploy applies new migrations before the new code serves traffic.
+#
+# The first deploy has an empty database. Seed it once from a shell on the
+# instance, or locally with DATABASE_URL pointed at the Render database:
+#   npm run seed
+# `src/scripts/seed.ts` refuses to run with NODE_ENV=production, because it
+# creates accounts with a known password — so seed with NODE_ENV unset and
+# change those passwords before anyone real uses the app.
+
+databases:
+  - name: fresh-fadez-db
+    databaseName: fresh_fadez
+    plan: free
+    region: frankfurt
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: fresh-fadez-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    rootDir: server
+    # `migrate deploy` applies pending migrations without prompting and never
+    # resets anything — the only migration command safe to run unattended.
+    # It also creates the btree_gist extension and the exclusion constraints,
+    # so the double-booking guarantee is in place before the first request.
+    buildCommand: npm ci && npm run build && npx prisma migrate deploy
+    startCommand: node dist/index.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fresh-fadez-db
+          property: connectionString
+      # Two separate secrets, so a leaked access token cannot be turned into a
+      # refresh token. Render generates both; they are never in this file.
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: ACCESS_TOKEN_TTL_MINUTES
+        value: "30"
+      - key: REFRESH_TOKEN_TTL_DAYS
+        value: "30"
+      # The salon's booking policy. These are the numbers the owner will want
+      # changed after a fortnight of real use, and changing them here is a
+      # redeploy with no code change.
+      - key: SALON_UTC_OFFSET_MINUTES
+        value: "120" # Africa/Johannesburg, no DST
+      - key: MIN_BOOKING_LEAD_MINUTES
+        value: "120"
+      - key: SLOT_GRANULARITY_MINUTES
+        value: "15"
+      - key: MAX_BOOKING_DAYS_AHEAD
+        value: "60"
+      - key: CANCELLATION_WINDOW_HOURS
+        value: "4"
+      # The Flutter app is not a browser origin and sends no cookies, so this
+      # is permissive. Narrow it if a web admin panel is added.
+      - key: CORS_ORIGINS
+        value: "*"
