@@ -14,10 +14,8 @@ class ServicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final categories = SampleData.services
-        .map((service) => service.category)
-        .toSet()
-        .toList();
+    final categories =
+        SampleData.services.map((service) => service.category).toSet().toList();
 
     return SafeArea(
       bottom: false,
@@ -45,8 +43,7 @@ class ServicesScreen extends StatelessWidget {
               ServiceRow(
                 service: service,
                 onTap: () => onStartBooking(service),
-                showDivider:
-                    service !=
+                showDivider: service !=
                     SampleData.services
                         .where((s) => s.category == category)
                         .last,

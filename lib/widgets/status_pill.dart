@@ -65,11 +65,11 @@ class StatusPill extends StatelessWidget {
   }
 
   String get _label => switch (status) {
-    AppointmentStatus.confirmed => 'CONFIRMED',
-    AppointmentStatus.pending => 'PENDING',
-    AppointmentStatus.completed => 'DONE',
-    AppointmentStatus.cancelled => 'CANCELLED',
-    AppointmentStatus.noShow => 'NO SHOW',
-    _ => status.toUpperCase(),
-  };
+        AppointmentStatus.confirmed => 'CONFIRMED',
+        AppointmentStatus.pending => 'PENDING',
+        AppointmentStatus.completed => 'DONE',
+        AppointmentStatus.cancelled => 'CANCELLED',
+        AppointmentStatus.noShow => 'NO SHOW',
+        _ => status.toUpperCase(),
+      };
 }

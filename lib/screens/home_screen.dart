@@ -173,7 +173,8 @@ class _NextUpCard extends StatelessWidget {
               // A filled black pill would vanish on a black card, so the
               // status inverts here.
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: scheme.onPrimary,
                   borderRadius: BorderRadius.circular(AppRadius.small + 3),
@@ -254,13 +255,14 @@ class _MetaChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Icon(icon, size: 15, color: color),
-      const SizedBox(width: 7),
-      Text(label, style: TextStyle(fontSize: AppFontSize.label, color: color)),
-    ],
-  );
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 15, color: color),
+          const SizedBox(width: 7),
+          Text(label,
+              style: TextStyle(fontSize: AppFontSize.label, color: color)),
+        ],
+      );
 }
 
 class _NoBookingsCard extends StatelessWidget {
@@ -354,7 +356,8 @@ class _SalonCard extends StatelessWidget {
             text: SampleData.salonAddress,
           ),
           const SizedBox(height: 7),
-          const _InfoLine(icon: Icons.call_outlined, text: SampleData.salonPhone),
+          const _InfoLine(
+              icon: Icons.call_outlined, text: SampleData.salonPhone),
           const SizedBox(height: 7),
           const _InfoLine(
             icon: Icons.access_time,

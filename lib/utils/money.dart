@@ -30,7 +30,9 @@ class Money {
   /// round numbers and `R45` reads better than `R45,00` on a price card.
   static String fromCents(int cents) {
     final rand = cents / 100;
-    return rand == rand.roundToDouble() ? _whole.format(rand) : _exact.format(rand);
+    return rand == rand.roundToDouble()
+        ? _whole.format(rand)
+        : _exact.format(rand);
   }
 
   /// Formats an amount already expressed in Rand.

@@ -1,7 +1,6 @@
 import '../utils/money.dart';
 
 class Service {
-
   const Service({
     required this.id,
     required this.name,

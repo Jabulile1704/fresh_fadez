@@ -72,11 +72,13 @@ class AppMessages {
   static const String emailRequired = 'Email is required';
   static const String passwordRequired = 'Password is required';
   static const String invalidEmail = 'Please enter a valid email';
-  static const String passwordTooShort = 'Password must be at least 6 characters';
+  static const String passwordTooShort =
+      'Password must be at least 6 characters';
   static const String loginSuccess = 'Login successful!';
   static const String logoutSuccess = 'Logged out successfully';
   static const String bookingSuccess = 'Appointment booked successfully!';
-  static const String somethingWentWrong = 'Something went wrong. Please try again.';
+  static const String somethingWentWrong =
+      'Something went wrong. Please try again.';
 }
 
 class Validators {
@@ -85,8 +87,7 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Email is required';
     }
-    const emailPattern =
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    const emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     final regex = RegExp(emailPattern);
     if (!regex.hasMatch(value)) {
       return 'Please enter a valid email';

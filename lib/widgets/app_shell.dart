@@ -70,8 +70,9 @@ class _AppShellState extends State<AppShell> {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        const SnackBar(content: Text('${AppMessages.bookingSuccess} — '
-            'the salon will confirm shortly.')),
+        const SnackBar(
+            content: Text('${AppMessages.bookingSuccess} — '
+                'the salon will confirm shortly.')),
       );
   }
 
@@ -128,48 +129,47 @@ class _AppShellState extends State<AppShell> {
       ..showSnackBar(const SnackBar(content: Text('Booking cancelled.')));
   }
 
-  void _signOut() =>
-      Navigator.of(context).pushNamedAndRemoveUntil(
+  void _signOut() => Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.login,
         (route) => false,
       );
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    extendBody: true,
-    body: Stack(
-      children: [
-        IndexedStack(
-          index: _index,
+        extendBody: true,
+        body: Stack(
           children: [
-            HomeScreen(
-              appointments: _appointments,
-              onStartBooking: _startBooking,
-              onSeeAllServices: () => setState(() => _index = 1),
+            IndexedStack(
+              index: _index,
+              children: [
+                HomeScreen(
+                  appointments: _appointments,
+                  onStartBooking: _startBooking,
+                  onSeeAllServices: () => setState(() => _index = 1),
+                ),
+                ServicesScreen(onStartBooking: _startBooking),
+                AppointmentsScreen(
+                  appointments: _appointments,
+                  onReschedule: (appointment) => _startBooking(),
+                  onCancel: _cancel,
+                  onStartBooking: _startBooking,
+                ),
+                ProfileScreen(
+                  appointments: _appointments,
+                  onSignOut: _signOut,
+                ),
+              ],
             ),
-            ServicesScreen(onStartBooking: _startBooking),
-            AppointmentsScreen(
-              appointments: _appointments,
-              onReschedule: (appointment) => _startBooking(),
-              onCancel: _cancel,
-              onStartBooking: _startBooking,
-            ),
-            ProfileScreen(
-              appointments: _appointments,
-              onSignOut: _signOut,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: GlassBottomNav(
+                items: _navItems,
+                currentIndex: _index,
+                onTabSelected: (index) => setState(() => _index = index),
+                onBookPressed: _startBooking,
+              ),
             ),
           ],
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: GlassBottomNav(
-            items: _navItems,
-            currentIndex: _index,
-            onTabSelected: (index) => setState(() => _index = index),
-            onBookPressed: _startBooking,
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 }

@@ -1,5 +1,4 @@
 class User {
-
   const User({
     required this.id,
     required this.firstName,
@@ -30,16 +29,17 @@ class User {
     String? profileImage,
     String? role,
     bool? isActive,
-  }) => User(
-      id: id ?? this.id,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
-      profileImage: profileImage ?? this.profileImage,
-      role: role ?? this.role,
-      isActive: isActive ?? this.isActive,
-    );
+  }) =>
+      User(
+        id: id ?? this.id,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        email: email ?? this.email,
+        phone: phone ?? this.phone,
+        profileImage: profileImage ?? this.profileImage,
+        role: role ?? this.role,
+        isActive: isActive ?? this.isActive,
+      );
 
   @override
   String toString() => 'User(id: $id, fullName: $fullName, email: $email)';

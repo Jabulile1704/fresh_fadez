@@ -29,12 +29,13 @@ class BookingDraft {
     String? time,
     bool clearStylist = false,
     bool clearTime = false,
-  }) => BookingDraft(
-    service: service ?? this.service,
-    stylist: clearStylist ? null : (stylist ?? this.stylist),
-    date: date ?? this.date,
-    time: clearTime ? null : (time ?? this.time),
-  );
+  }) =>
+      BookingDraft(
+        service: service ?? this.service,
+        stylist: clearStylist ? null : (stylist ?? this.stylist),
+        date: date ?? this.date,
+        time: clearTime ? null : (time ?? this.time),
+      );
 
   @override
   String toString() =>

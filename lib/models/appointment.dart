@@ -1,7 +1,6 @@
 import '../utils/money.dart';
 
 class Appointment {
-
   const Appointment({
     required this.id,
     required this.userId,
@@ -42,5 +41,6 @@ class Appointment {
   bool get isCancelled => status == 'cancelled';
 
   @override
-  String toString() => 'Appointment(id: $id, date: $formattedDate, status: $status)';
+  String toString() =>
+      'Appointment(id: $id, date: $formattedDate, status: $status)';
 }

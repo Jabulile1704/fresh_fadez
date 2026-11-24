@@ -1,5 +1,4 @@
 class Salon {
-
   const Salon({
     required this.id,
     required this.name,

@@ -38,8 +38,7 @@ class _BookingScreenState extends State<BookingScreen> {
     setState(() {
       // Changing the service can invalidate the stylist, so clear it rather
       // than carry a stylist who does not perform the new service.
-      final keepStylist =
-          _draft.stylist != null &&
+      final keepStylist = _draft.stylist != null &&
           SampleData.stylistsFor(service.id).contains(_draft.stylist);
       _draft = _draft.copyWith(service: service, clearStylist: !keepStylist);
     });
@@ -116,10 +115,9 @@ class _BookingScreenState extends State<BookingScreen> {
                     children: [
                       _AnyoneOption(
                         selected: _draft.stylist == null,
-                        onTap: () =>
-                            setState(() => _draft = _draft.copyWith(
-                                  clearStylist: true,
-                                )),
+                        onTap: () => setState(() => _draft = _draft.copyWith(
+                              clearStylist: true,
+                            )),
                       ),
                       for (final stylist in _eligibleStylists)
                         _StylistOption(
@@ -330,12 +328,9 @@ class _AnyoneOption extends StatelessWidget {
               'Anyone',
               textAlign: TextAlign.center,
               style: theme.textTheme.labelMedium?.copyWith(
-                fontWeight: selected
-                    ? AppFontWeight.semiBold
-                    : AppFontWeight.medium,
-                color: selected
-                    ? scheme.onSurface
-                    : scheme.onSurfaceVariant,
+                fontWeight:
+                    selected ? AppFontWeight.semiBold : AppFontWeight.medium,
+                color: selected ? scheme.onSurface : scheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -378,9 +373,8 @@ class _StylistOption extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.labelMedium?.copyWith(
-                fontWeight: selected
-                    ? AppFontWeight.semiBold
-                    : AppFontWeight.medium,
+                fontWeight:
+                    selected ? AppFontWeight.semiBold : AppFontWeight.medium,
                 color: selected
                     ? theme.colorScheme.onSurface
                     : theme.colorScheme.onSurfaceVariant,

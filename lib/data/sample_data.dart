@@ -202,12 +202,12 @@ class SampleData {
   static const Set<String> takenSlots = {'09:45', '11:15', '15:45'};
 
   static IconData iconFor(String serviceId) => switch (serviceId) {
-    's1' => Icons.content_cut,
-    's2' => Icons.water_drop_outlined,
-    's3' => Icons.face_retouching_natural_outlined,
-    's4' => Icons.brush_outlined,
-    _ => Icons.spa_outlined,
-  };
+        's1' => Icons.content_cut,
+        's2' => Icons.water_drop_outlined,
+        's3' => Icons.face_retouching_natural_outlined,
+        's4' => Icons.brush_outlined,
+        _ => Icons.spa_outlined,
+      };
 
   static List<Stylist> stylistsFor(String serviceId) => stylists
       .where((stylist) => stylist.services.contains(serviceId))

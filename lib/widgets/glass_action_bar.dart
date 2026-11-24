@@ -26,9 +26,7 @@ class GlassActionBar extends StatelessWidget {
         ),
         child: Container(
           decoration: BoxDecoration(
-            color: isDark
-                ? AppColors.glassFillDark
-                : AppColors.glassFillLight,
+            color: isDark ? AppColors.glassFillDark : AppColors.glassFillLight,
             border: Border(
               top: BorderSide(
                 color: isDark

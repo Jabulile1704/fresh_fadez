@@ -129,9 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       size: 19,
                       color: scheme.onSurfaceVariant,
                     ),
-                    tooltip: _obscurePassword
-                        ? 'Show password'
-                        : 'Hide password',
+                    tooltip:
+                        _obscurePassword ? 'Show password' : 'Hide password',
                   ),
                 ),
                 Align(
@@ -172,9 +171,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 OutlinedButton.icon(
                   onPressed: _isLoading
                       ? null
-                      : () =>
-                            Navigator.of(context)
-                                .pushReplacementNamed(AppRoutes.home),
+                      : () => Navigator.of(context)
+                          .pushReplacementNamed(AppRoutes.home),
                   icon: const Icon(Icons.person_outline, size: 18),
                   label: const Text('Continue as guest'),
                   style: OutlinedButton.styleFrom(
