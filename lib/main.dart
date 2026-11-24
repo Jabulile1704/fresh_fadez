@@ -15,23 +15,23 @@ class FreshFadezApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: appName,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        debugShowCheckedModeBanner: false,
-        initialRoute: AppRoutes.login,
-        routes: {
-          AppRoutes.login: (context) => const LoginScreen(),
-          AppRoutes.home: (context) => const AppShell(),
-        },
-        // The booking flow is pushed with MaterialPageRoute rather than named
-        // routes, because each step carries a BookingDraft forward and hands one
-        // back. Anything else that is still unbuilt lands here instead of
-        // throwing, until go_router arrives.
-        onUnknownRoute: (settings) => MaterialPageRoute<void>(
-          builder: (context) => _NotBuiltYetScreen(routeName: settings.name),
-        ),
-      );
+    title: appName,
+    theme: AppTheme.lightTheme,
+    darkTheme: AppTheme.darkTheme,
+    debugShowCheckedModeBanner: false,
+    initialRoute: AppRoutes.login,
+    routes: {
+      AppRoutes.login: (context) => const LoginScreen(),
+      AppRoutes.home: (context) => const AppShell(),
+    },
+    // The booking flow is pushed with MaterialPageRoute rather than named
+    // routes, because each step carries a BookingDraft forward and hands one
+    // back. Anything else that is still unbuilt lands here instead of
+    // throwing, until go_router arrives.
+    onUnknownRoute: (settings) => MaterialPageRoute<void>(
+      builder: (context) => _NotBuiltYetScreen(routeName: settings.name),
+    ),
+  );
 }
 
 class _NotBuiltYetScreen extends StatelessWidget {

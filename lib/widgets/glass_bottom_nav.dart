@@ -100,11 +100,7 @@ class GlassBottomNav extends StatelessWidget {
                           const SizedBox(width: AppGlass.bookButtonSize + 8),
                           for (var i = 0; i < trailing.length; i++)
                             Expanded(
-                              child: _tab(
-                                context,
-                                scheme,
-                                leading.length + i,
-                              ),
+                              child: _tab(context, scheme, leading.length + i),
                             ),
                         ],
                       ),
@@ -145,8 +141,9 @@ class GlassBottomNav extends StatelessWidget {
                 item.label,
                 style: TextStyle(
                   fontSize: AppFontSize.tiny,
-                  fontWeight:
-                      selected ? AppFontWeight.semiBold : AppFontWeight.medium,
+                  fontWeight: selected
+                      ? AppFontWeight.semiBold
+                      : AppFontWeight.medium,
                   color: color,
                 ),
               ),
@@ -158,20 +155,20 @@ class GlassBottomNav extends StatelessWidget {
   }
 
   Widget _bookButton(ColorScheme scheme) => Semantics(
-        button: true,
-        label: 'Book an appointment',
-        child: GestureDetector(
-          onTap: onBookPressed,
-          child: Container(
-            width: AppGlass.bookButtonSize,
-            height: AppGlass.bookButtonSize,
-            decoration: BoxDecoration(
-              color: scheme.primary,
-              shape: BoxShape.circle,
-              boxShadow: AppShadows.raisedButton,
-            ),
-            child: Icon(Icons.add_rounded, size: 27, color: scheme.onPrimary),
-          ),
+    button: true,
+    label: 'Book an appointment',
+    child: GestureDetector(
+      onTap: onBookPressed,
+      child: Container(
+        width: AppGlass.bookButtonSize,
+        height: AppGlass.bookButtonSize,
+        decoration: BoxDecoration(
+          color: scheme.primary,
+          shape: BoxShape.circle,
+          boxShadow: AppShadows.raisedButton,
         ),
-      );
+        child: Icon(Icons.add_rounded, size: 27, color: scheme.onPrimary),
+      ),
+    ),
+  );
 }

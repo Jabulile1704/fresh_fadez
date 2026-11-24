@@ -50,16 +50,28 @@ class _AppShellState extends State<AppShell> {
       return;
     }
 
+    final chosenService = draft.service!;
+    final startsAt = _combine(draft.date!, draft.time!);
+    final chosenStylist = draft.stylist;
+
     final booked = Appointment(
       id: 'new-${DateTime.now().millisecondsSinceEpoch}',
-      userId: SampleData.currentUser.id,
-      salonId: SampleData.salonId,
-      serviceName: draft.service!.name,
-      stylistName: draft.stylistLabel,
-      appointmentDate: draft.date!,
-      appointmentTime: draft.time!,
       status: AppointmentStatus.pending,
-      totalPrice: draft.service!.price,
+      startsAt: startsAt,
+      endsAt: startsAt.add(Duration(minutes: chosenService.durationMinutes)),
+      durationMinutes: chosenService.durationMinutes,
+      priceCents: chosenService.priceCents,
+      serviceId: chosenService.id,
+      stylistId: chosenStylist?.id ?? '',
+      userId: SampleData.currentUser.id,
+      service: chosenService,
+      stylist: chosenStylist == null
+          ? null
+          : AppointmentStylist(
+              id: chosenStylist.id,
+              fullName: chosenStylist.fullName,
+              title: chosenStylist.title,
+            ),
     );
 
     setState(() {
@@ -71,8 +83,11 @@ class _AppShellState extends State<AppShell> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         const SnackBar(
-            content: Text('${AppMessages.bookingSuccess} — '
-                'the salon will confirm shortly.')),
+          content: Text(
+            '${AppMessages.bookingSuccess} — '
+            'the salon will confirm shortly.',
+          ),
+        ),
       );
   }
 
@@ -83,7 +98,7 @@ class _AppShellState extends State<AppShell> {
         title: const Text('Cancel this booking?'),
         content: Text(
           '${appointment.serviceName} with ${appointment.stylistName} on '
-          '${appointment.formattedDate} at ${appointment.appointmentTime}.\n\n'
+          '${appointment.dateLabel} at ${appointment.timeLabel}.\n\n'
           'Cancelling inside 24 hours may be charged.',
         ),
         actions: [
@@ -107,17 +122,10 @@ class _AppShellState extends State<AppShell> {
       _appointments = [
         for (final a in _appointments)
           if (a.id == appointment.id)
-            Appointment(
-              id: a.id,
-              userId: a.userId,
-              salonId: a.salonId,
-              serviceName: a.serviceName,
-              stylistName: a.stylistName,
-              appointmentDate: a.appointmentDate,
-              appointmentTime: a.appointmentTime,
+            // freezed's copyWith, which the hand-written model did not have.
+            a.copyWith(
               status: AppointmentStatus.cancelled,
-              totalPrice: a.totalPrice,
-              notes: a.notes,
+              cancelledAt: DateTime.now(),
             )
           else
             a,
@@ -129,47 +137,55 @@ class _AppShellState extends State<AppShell> {
       ..showSnackBar(const SnackBar(content: Text('Booking cancelled.')));
   }
 
-  void _signOut() => Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.login,
-        (route) => false,
-      );
+  /// Turns a chosen day plus an `HH:MM` label into a real instant.
+  ///
+  /// The slot picker still works in label strings; once it reads
+  /// `GET /availability` it will carry the slot's own `startsAt` instead and
+  /// this goes away.
+  static DateTime _combine(DateTime day, String time) {
+    final parts = time.split(':');
+    final hour = int.tryParse(parts.first) ?? 9;
+    final minute = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+    return DateTime(day.year, day.month, day.day, hour, minute);
+  }
+
+  void _signOut() => Navigator.of(
+    context,
+  ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        extendBody: true,
-        body: Stack(
+    extendBody: true,
+    body: Stack(
+      children: [
+        IndexedStack(
+          index: _index,
           children: [
-            IndexedStack(
-              index: _index,
-              children: [
-                HomeScreen(
-                  appointments: _appointments,
-                  onStartBooking: _startBooking,
-                  onSeeAllServices: () => setState(() => _index = 1),
-                ),
-                ServicesScreen(onStartBooking: _startBooking),
-                AppointmentsScreen(
-                  appointments: _appointments,
-                  onReschedule: (appointment) => _startBooking(),
-                  onCancel: _cancel,
-                  onStartBooking: _startBooking,
-                ),
-                ProfileScreen(
-                  appointments: _appointments,
-                  onSignOut: _signOut,
-                ),
-              ],
+            HomeScreen(
+              appointments: _appointments,
+              onStartBooking: _startBooking,
+              onSeeAllServices: () => setState(() => _index = 1),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: GlassBottomNav(
-                items: _navItems,
-                currentIndex: _index,
-                onTabSelected: (index) => setState(() => _index = index),
-                onBookPressed: _startBooking,
-              ),
+            ServicesScreen(onStartBooking: _startBooking),
+            AppointmentsScreen(
+              appointments: _appointments,
+              onReschedule: (appointment) => _startBooking(),
+              onCancel: _cancel,
+              onStartBooking: _startBooking,
             ),
+            ProfileScreen(appointments: _appointments, onSignOut: _signOut),
           ],
         ),
-      );
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: GlassBottomNav(
+            items: _navItems,
+            currentIndex: _index,
+            onTabSelected: (index) => setState(() => _index = index),
+            onBookPressed: _startBooking,
+          ),
+        ),
+      ],
+    ),
+  );
 }

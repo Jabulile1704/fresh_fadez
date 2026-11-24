@@ -67,7 +67,7 @@ class ServiceRow extends StatelessWidget {
               ),
             ),
             Text(
-              Money.fromRand(service.price),
+              Money.fromCents(service.priceCents),
               style: theme.textTheme.labelLarge?.copyWith(
                 fontSize: AppFontSize.body,
               ),

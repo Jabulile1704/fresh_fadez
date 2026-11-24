@@ -159,9 +159,7 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
                   ),
                   const SizedBox(height: 20),
                   const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.large,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.large),
                     child: _SlotLegend(),
                   ),
                 ],
@@ -184,7 +182,7 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
                         _draft.time == null
                             ? AppMessages.selectTime
                             : '${DateFormat('EEE d MMM').format(_draft.date!)}'
-                                ' · ${_draft.time}',
+                                  ' · ${_draft.time}',
                         style: theme.textTheme.labelLarge,
                       ),
                       const SizedBox(height: 3),
@@ -200,7 +198,7 @@ class _TimeSlotsScreenState extends State<TimeSlotsScreen> {
                 ),
                 if (service != null)
                   Text(
-                    Money.fromRand(service.price),
+                    Money.fromCents(service.priceCents),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: 17,
                       fontWeight: AppFontWeight.bold,
@@ -267,8 +265,9 @@ class _DayChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 9),
           decoration: BoxDecoration(
             color: background,
-            border:
-                selected || closed ? null : Border.all(color: scheme.outline),
+            border: selected || closed
+                ? null
+                : Border.all(color: scheme.outline),
             borderRadius: BorderRadius.circular(AppRadius.large - 2),
           ),
           child: Column(
@@ -286,8 +285,9 @@ class _DayChip extends StatelessWidget {
                 DateFormat('dd').format(day),
                 style: TextStyle(
                   fontSize: 17,
-                  fontWeight:
-                      selected ? AppFontWeight.bold : AppFontWeight.semiBold,
+                  fontWeight: selected
+                      ? AppFontWeight.bold
+                      : AppFontWeight.semiBold,
                   color: foreground,
                 ),
               ),
@@ -388,10 +388,11 @@ class _SlotChip extends StatelessWidget {
             color: selected
                 ? scheme.primary
                 : taken
-                    ? scheme.surfaceContainerHighest
-                    : null,
-            border:
-                selected || taken ? null : Border.all(color: scheme.outline),
+                ? scheme.surfaceContainerHighest
+                : null,
+            border: selected || taken
+                ? null
+                : Border.all(color: scheme.outline),
             borderRadius: BorderRadius.circular(AppRadius.medium),
             boxShadow: selected ? AppShadows.card : null,
           ),
@@ -400,13 +401,14 @@ class _SlotChip extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: AppFontSize.label + 1,
-                fontWeight:
-                    selected ? AppFontWeight.bold : AppFontWeight.semiBold,
+                fontWeight: selected
+                    ? AppFontWeight.bold
+                    : AppFontWeight.semiBold,
                 color: selected
                     ? scheme.onPrimary
                     : taken
-                        ? AppColors.grey400
-                        : scheme.onSurface,
+                    ? AppColors.grey400
+                    : scheme.onSurface,
                 decoration: taken ? TextDecoration.lineThrough : null,
                 decorationColor: AppColors.grey400,
               ),
@@ -463,17 +465,17 @@ class _LegendKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(width: 13, height: 13, decoration: decoration),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: AppFontSize.caption,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      );
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(width: 13, height: 13, decoration: decoration),
+      const SizedBox(width: 6),
+      Text(
+        label,
+        style: TextStyle(
+          fontSize: AppFontSize.caption,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+      ),
+    ],
+  );
 }

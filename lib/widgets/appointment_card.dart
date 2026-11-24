@@ -28,7 +28,7 @@ class AppointmentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final date = appointment.appointmentDate;
+    final date = appointment.localStart;
     final isConfirmed = appointment.status == AppointmentStatus.confirmed;
 
     return Container(
@@ -63,13 +63,12 @@ class AppointmentCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${appointment.stylistName} · '
-                      '${appointment.appointmentTime}',
+                      '${appointment.stylistName} · ${appointment.timeLabel}',
                       style: theme.textTheme.bodyMedium,
                     ),
                     const SizedBox(height: AppSpacing.small),
                     Text(
-                      Money.fromRand(appointment.totalPrice),
+                      Money.fromCents(appointment.priceCents),
                       style: theme.textTheme.labelLarge?.copyWith(
                         fontSize: AppFontSize.body,
                         fontWeight: AppFontWeight.bold,

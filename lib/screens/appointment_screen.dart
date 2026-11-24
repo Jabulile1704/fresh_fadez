@@ -31,29 +31,30 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     final now = DateTime.now();
     final matching = switch (_filter) {
       _Filter.upcoming => widget.appointments.where(
-          (a) =>
-              a.appointmentDate.isAfter(now) &&
-              (a.status == AppointmentStatus.confirmed ||
-                  a.status == AppointmentStatus.pending),
-        ),
+        (a) =>
+            a.localStart.isAfter(now) &&
+            (a.status == AppointmentStatus.confirmed ||
+                a.status == AppointmentStatus.pending),
+      ),
       _Filter.past => widget.appointments.where(
-          (a) =>
-              a.status == AppointmentStatus.completed ||
-              (a.appointmentDate.isBefore(now) &&
-                  a.status != AppointmentStatus.cancelled &&
-                  a.status != AppointmentStatus.noShow),
-        ),
+        (a) =>
+            a.status == AppointmentStatus.completed ||
+            (a.localStart.isBefore(now) &&
+                a.status != AppointmentStatus.cancelled &&
+                a.status != AppointmentStatus.noShow),
+      ),
       _Filter.cancelled => widget.appointments.where(
-          (a) =>
-              a.status == AppointmentStatus.cancelled ||
-              a.status == AppointmentStatus.noShow,
-        ),
+        (a) =>
+            a.status == AppointmentStatus.cancelled ||
+            a.status == AppointmentStatus.noShow,
+      ),
     };
 
-    return matching.toList()
-      ..sort((a, b) => _filter == _Filter.upcoming
-          ? a.appointmentDate.compareTo(b.appointmentDate)
-          : b.appointmentDate.compareTo(a.appointmentDate));
+    return matching.toList()..sort(
+      (a, b) => _filter == _Filter.upcoming
+          ? a.localStart.compareTo(b.localStart)
+          : b.localStart.compareTo(a.localStart),
+    );
   }
 
   @override
@@ -194,9 +195,9 @@ class _EmptyState extends StatelessWidget {
       _Filter.upcoming => ('Nothing booked', 'Your next cut starts here.'),
       _Filter.past => ('No history yet', 'Past visits will show up here.'),
       _Filter.cancelled => (
-          'Nothing cancelled',
-          'Bookings you call off land here.',
-        ),
+        'Nothing cancelled',
+        'Bookings you call off land here.',
+      ),
     };
 
     return Center(

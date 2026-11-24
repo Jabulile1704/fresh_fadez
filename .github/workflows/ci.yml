@@ -37,6 +37,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # The .freezed.dart / .g.dart files are committed, so the risk is them
+      # going stale: a model changes, nobody reruns the generator, and CI
+      # stays green against code that no longer matches. Regenerating and
+      # failing on a diff is what catches that.
+      - name: Check generated code is up to date
+        run: |
+          dart run build_runner build
+          git diff --exit-code -- '*.g.dart' '*.freezed.dart'
+
       - name: Check formatting
         run: dart format --output=none --set-exit-if-changed .
 

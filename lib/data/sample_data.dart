@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../models/app_user.dart';
 import '../models/appointment.dart';
 import '../models/service.dart';
 import '../models/stylist.dart';
-import '../models/user.dart';
-import '../utils/constants.dart';
 
-/// Stand-in data for the UI layer.
+/// Stand-in data for the UI layer, in the same shapes the API returns.
 ///
-/// This exists so the screens can be built against the typed models rather
-/// than the `List<Map<String, dynamic>>` literals that used to sit inside each
-/// widget's state. When the REST API lands, the repositories replace this file
-/// and the screens do not change.
+/// The screens read this today and the repositories tomorrow. Because both
+/// produce identical models, Sprint 2 swaps the source without touching a
+/// single widget.
 class SampleData {
   const SampleData._();
 
@@ -21,109 +19,92 @@ class SampleData {
   static const String salonPhone = '+27 51 123 4567';
   static const String salonHours = '09:00 – 20:00';
 
-  static const User currentUser = User(
+  static const AppUser currentUser = AppUser(
     id: 'u1',
-    firstName: 'Jabulile',
-    lastName: 'Mashibini',
     email: 'jabu@example.com',
+    fullName: 'Jabulile Mashibini',
     phone: '+27 51 123 4567',
   );
 
-  static const List<Service> services = [
-    Service(
-      id: 's1',
-      name: 'Hair Cutting',
-      description: 'Cut and style',
-      category: 'Hair Services',
-      price: 45,
-      durationMinutes: 45,
-      rating: 4.9,
-    ),
-    Service(
-      id: 's2',
-      name: 'Hair Coloring',
-      description: 'Full colour with consultation',
-      category: 'Hair Services',
-      price: 185,
-      durationMinutes: 90,
-      rating: 4.8,
-    ),
-    Service(
-      id: 's3',
-      name: 'Facial Treatment',
-      description: 'Deep cleanse and rejuvenation',
-      category: 'Skincare',
-      price: 165,
-      durationMinutes: 60,
-      rating: 4.7,
-    ),
-    Service(
-      id: 's4',
-      name: 'Manicure & Pedicure',
-      description: 'Full nail care and polish',
-      category: 'Nails',
-      price: 155,
-      durationMinutes: 60,
-      rating: 4.8,
-    ),
-  ];
+  static const Service haircut = Service(
+    id: 's1',
+    name: 'Hair Cutting',
+    category: 'Hair Services',
+    priceCents: 4500,
+    durationMinutes: 45,
+    description: 'Cut and style',
+  );
+  static const Service colouring = Service(
+    id: 's2',
+    name: 'Hair Coloring',
+    category: 'Hair Services',
+    priceCents: 18500,
+    durationMinutes: 90,
+    description: 'Full colour with consultation',
+  );
+  static const Service facial = Service(
+    id: 's3',
+    name: 'Facial Treatment',
+    category: 'Skincare',
+    priceCents: 16500,
+    durationMinutes: 60,
+    description: 'Deep cleanse and rejuvenation',
+  );
+  static const Service nails = Service(
+    id: 's4',
+    name: 'Manicure & Pedicure',
+    category: 'Nails',
+    priceCents: 15500,
+    durationMinutes: 60,
+    description: 'Full nail care and polish',
+  );
 
-  static final List<Stylist> stylists = [
+  static const List<Service> services = [haircut, colouring, facial, nails];
+
+  static const List<Stylist> stylists = [
     Stylist(
       id: 'st1',
-      salonId: salonId,
-      firstName: 'Jabulile',
-      lastName: 'Mashibini',
-      email: 'jabulile@after8.co.za',
-      phone: '+27 51 123 4567',
-      createdAt: DateTime(2018, 3, 12),
-      specialization: 'Senior Stylist',
+      userId: 'u-st1',
+      fullName: 'Jabulile Mashibini',
+      title: 'Senior Stylist',
+      specialization: 'Hair cutting & colouring',
       experienceYears: 8,
       rating: 4.9,
       reviewCount: 156,
-      services: const ['s1', 's2'],
+      services: [haircut, colouring],
     ),
     Stylist(
       id: 'st2',
-      salonId: salonId,
-      firstName: 'Oscar',
-      lastName: 'Poco',
-      email: 'oscar@after8.co.za',
-      phone: '+27 51 123 4568',
-      createdAt: DateTime(2020, 6, 15),
-      specialization: 'Beauty Specialist',
+      userId: 'u-st2',
+      fullName: 'Oscar Poco',
+      title: 'Beauty Specialist',
+      specialization: 'Facial & skincare',
       experienceYears: 6,
       rating: 4.7,
       reviewCount: 98,
-      services: const ['s3'],
+      services: [facial],
     ),
     Stylist(
       id: 'st3',
-      salonId: salonId,
-      firstName: 'Sebabatso',
-      lastName: 'Molelle',
-      email: 'sebabatso@after8.co.za',
-      phone: '+27 51 123 4569',
-      createdAt: DateTime(2021, 2, 8),
-      specialization: 'Nail Technician',
+      userId: 'u-st3',
+      fullName: 'Sebabatso Molelle',
+      title: 'Nail Technician',
+      specialization: 'Manicure & pedicure',
       experienceYears: 5,
       rating: 4.8,
       reviewCount: 127,
-      services: const ['s4'],
+      services: [nails],
     ),
     Stylist(
       id: 'st4',
-      salonId: salonId,
-      firstName: 'Lwando',
-      lastName: 'Ndulula',
-      email: 'lwando@after8.co.za',
-      phone: '+27 51 123 4570',
-      createdAt: DateTime(2019, 9, 23),
-      specialization: 'Makeup Artist',
+      userId: 'u-st4',
+      fullName: 'Lwando Ndulula',
+      title: 'Makeup Artist',
+      specialization: 'Makeup & bridal',
       experienceYears: 7,
       rating: 4.9,
       reviewCount: 142,
-      services: const ['s1', 's3'],
+      services: [haircut, facial],
     ),
   ];
 
@@ -132,55 +113,65 @@ class SampleData {
   static List<Appointment> get appointments {
     final now = DateTime.now();
     return [
-      Appointment(
+      _make(
         id: 'a1',
-        userId: currentUser.id,
-        salonId: salonId,
-        serviceName: 'Hair Cutting',
-        stylistName: 'Jabulile Mashibini',
-        appointmentDate: now.add(const Duration(days: 4)),
-        appointmentTime: '14:00',
+        service: haircut,
+        stylist: stylists[0],
+        startsAt: _at(now.add(const Duration(days: 4)), 14, 0),
         status: AppointmentStatus.confirmed,
-        totalPrice: 45,
       ),
-      Appointment(
+      _make(
         id: 'a2',
-        userId: currentUser.id,
-        salonId: salonId,
-        serviceName: 'Facial Treatment',
-        stylistName: 'Oscar Poco',
-        appointmentDate: now.add(const Duration(days: 13)),
-        appointmentTime: '15:30',
+        service: facial,
+        stylist: stylists[1],
+        startsAt: _at(now.add(const Duration(days: 13)), 15, 30),
         status: AppointmentStatus.pending,
-        totalPrice: 165,
       ),
-      Appointment(
+      _make(
         id: 'a3',
-        userId: currentUser.id,
-        salonId: salonId,
-        serviceName: 'Hair Coloring',
-        stylistName: 'Jabulile Mashibini',
-        appointmentDate: now.subtract(const Duration(days: 21)),
-        appointmentTime: '11:00',
+        service: colouring,
+        stylist: stylists[0],
+        startsAt: _at(now.subtract(const Duration(days: 21)), 11, 0),
         status: AppointmentStatus.completed,
-        totalPrice: 185,
       ),
-      Appointment(
+      _make(
         id: 'a4',
-        userId: currentUser.id,
-        salonId: salonId,
-        serviceName: 'Manicure & Pedicure',
-        stylistName: 'Sebabatso Molelle',
-        appointmentDate: now.subtract(const Duration(days: 40)),
-        appointmentTime: '09:45',
+        service: nails,
+        stylist: stylists[2],
+        startsAt: _at(now.subtract(const Duration(days: 40)), 9, 45),
         status: AppointmentStatus.cancelled,
-        totalPrice: 155,
       ),
     ];
   }
 
-  /// Slots a stylist could work. The booked set stands in for what
-  /// `GET /availability` will return once the API is wired up.
+  static Appointment _make({
+    required String id,
+    required Service service,
+    required Stylist stylist,
+    required DateTime startsAt,
+    required AppointmentStatus status,
+  }) => Appointment(
+    id: id,
+    status: status,
+    startsAt: startsAt,
+    endsAt: startsAt.add(Duration(minutes: service.durationMinutes)),
+    durationMinutes: service.durationMinutes,
+    priceCents: service.priceCents,
+    serviceId: service.id,
+    stylistId: stylist.id,
+    userId: currentUser.id,
+    service: service,
+    stylist: AppointmentStylist(
+      id: stylist.id,
+      fullName: stylist.fullName,
+      title: stylist.title,
+    ),
+  );
+
+  static DateTime _at(DateTime day, int hour, int minute) =>
+      DateTime(day.year, day.month, day.day, hour, minute);
+
+  /// Slots a stylist could work. Stands in for `GET /availability`.
   static const List<String> morningSlots = [
     '09:00',
     '09:45',
@@ -202,14 +193,13 @@ class SampleData {
   static const Set<String> takenSlots = {'09:45', '11:15', '15:45'};
 
   static IconData iconFor(String serviceId) => switch (serviceId) {
-        's1' => Icons.content_cut,
-        's2' => Icons.water_drop_outlined,
-        's3' => Icons.face_retouching_natural_outlined,
-        's4' => Icons.brush_outlined,
-        _ => Icons.spa_outlined,
-      };
+    's1' => Icons.content_cut,
+    's2' => Icons.water_drop_outlined,
+    's3' => Icons.face_retouching_natural_outlined,
+    's4' => Icons.brush_outlined,
+    _ => Icons.spa_outlined,
+  };
 
-  static List<Stylist> stylistsFor(String serviceId) => stylists
-      .where((stylist) => stylist.services.contains(serviceId))
-      .toList();
+  static List<Stylist> stylistsFor(String serviceId) =>
+      stylists.where((stylist) => stylist.performs(serviceId)).toList();
 }

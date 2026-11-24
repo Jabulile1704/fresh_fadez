@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
 
   Appointment? get _nextAppointment {
     final upcoming = appointments.where((a) => a.isUpcoming).toList()
-      ..sort((a, b) => a.appointmentDate.compareTo(b.appointmentDate));
+      ..sort((a, b) => a.localStart.compareTo(b.localStart));
     return upcoming.isEmpty ? null : upcoming.first;
   }
 
@@ -109,7 +109,7 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           AvatarCircle(
-                            name: stylist.fullName,
+                            name: stylist.displayName,
                             size: 58,
                             filled: stylist == SampleData.stylists.first,
                           ),
@@ -173,14 +173,16 @@ class _NextUpCard extends StatelessWidget {
               // A filled black pill would vanish on a black card, so the
               // status inverts here.
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: scheme.onPrimary,
                   borderRadius: BorderRadius.circular(AppRadius.small + 3),
                 ),
                 child: Text(
-                  appointment.status.toUpperCase(),
+                  appointment.status.label,
                   style: TextStyle(
                     fontSize: 9.5,
                     fontWeight: AppFontWeight.bold,
@@ -214,20 +216,18 @@ class _NextUpCard extends StatelessWidget {
             children: [
               _MetaChip(
                 icon: Icons.calendar_today_outlined,
-                label: DateFormat(
-                  'EEE d MMM',
-                ).format(appointment.appointmentDate),
+                label: appointment.dateLabel,
                 color: muted,
               ),
               const SizedBox(width: 18),
               _MetaChip(
                 icon: Icons.access_time,
-                label: appointment.appointmentTime,
+                label: appointment.timeLabel,
                 color: muted,
               ),
               const Spacer(),
               Text(
-                Money.fromRand(appointment.totalPrice),
+                Money.fromCents(appointment.priceCents),
                 style: TextStyle(
                   fontSize: AppFontSize.body,
                   fontWeight: AppFontWeight.bold,
@@ -255,14 +255,16 @@ class _MetaChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 15, color: color),
-          const SizedBox(width: 7),
-          Text(label,
-              style: TextStyle(fontSize: AppFontSize.label, color: color)),
-        ],
-      );
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 15, color: color),
+      const SizedBox(width: 7),
+      Text(
+        label,
+        style: TextStyle(fontSize: AppFontSize.label, color: color),
+      ),
+    ],
+  );
 }
 
 class _NoBookingsCard extends StatelessWidget {
@@ -301,11 +303,7 @@ class _NoBookingsCard extends StatelessWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    this.actionLabel,
-    this.onAction,
-  });
+  const _SectionHeader({required this.title, this.actionLabel, this.onAction});
 
   final String title;
   final String? actionLabel;
@@ -357,7 +355,9 @@ class _SalonCard extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           const _InfoLine(
-              icon: Icons.call_outlined, text: SampleData.salonPhone),
+            icon: Icons.call_outlined,
+            text: SampleData.salonPhone,
+          ),
           const SizedBox(height: 7),
           const _InfoLine(
             icon: Icons.access_time,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/appointment.dart';
 import '../utils/constants.dart';
 
 /// An appointment's status, carried by fill rather than hue.
@@ -7,18 +8,21 @@ import '../utils/constants.dart';
 /// Solid = confirmed, outlined = pending, muted = finished or cancelled. With
 /// no colour in the palette this is what keeps the states apart, and it has
 /// the side benefit of working for colour-blind users and in direct sunlight.
+///
+/// Takes the typed [AppointmentStatus] rather than a `String`, so a new state
+/// on the server becomes a compile error here instead of an unstyled pill.
 class StatusPill extends StatelessWidget {
   const StatusPill({required this.status, super.key});
 
-  final String status;
+  final AppointmentStatus status;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    late final Color background;
-    late final Color foreground;
-    late final Color? borderColor;
+    final Color background;
+    final Color foreground;
+    final Color? borderColor;
 
     switch (status) {
       case AppointmentStatus.confirmed:
@@ -34,7 +38,7 @@ class StatusPill extends StatelessWidget {
         background = scheme.surfaceContainerHighest;
         foreground = scheme.onSurfaceVariant;
         borderColor = null;
-      default:
+      case AppointmentStatus.completed:
         background = scheme.surfaceContainerHighest;
         foreground = scheme.onSurface;
         borderColor = null;
@@ -53,7 +57,7 @@ class StatusPill extends StatelessWidget {
             : Border.all(color: borderColor, width: 1.5),
       ),
       child: Text(
-        _label,
+        status.label,
         style: TextStyle(
           fontSize: 9.5,
           fontWeight: AppFontWeight.bold,
@@ -63,13 +67,4 @@ class StatusPill extends StatelessWidget {
       ),
     );
   }
-
-  String get _label => switch (status) {
-        AppointmentStatus.confirmed => 'CONFIRMED',
-        AppointmentStatus.pending => 'PENDING',
-        AppointmentStatus.completed => 'DONE',
-        AppointmentStatus.cancelled => 'CANCELLED',
-        AppointmentStatus.noShow => 'NO SHOW',
-        _ => status.toUpperCase(),
-      };
 }

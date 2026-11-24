@@ -159,7 +159,10 @@ class _Stat extends StatelessWidget {
 class _StatDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
-      width: 1, height: 52, color: Theme.of(context).colorScheme.outline);
+    width: 1,
+    height: 52,
+    color: Theme.of(context).colorScheme.outline,
+  );
 }
 
 class _SettingsTile extends StatelessWidget {
