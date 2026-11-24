@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# A new push to a branch makes the previous run pointless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter:
+    name: Format, analyze & test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      # Pinned rather than tracking `stable`, so a Flutter release cannot
+      # turn a green PR red overnight. Bump it deliberately.
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.4
+          channel: stable
+          cache: true
+
+      - name: Report versions
+        run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # The .freezed.dart / .g.dart files are committed, so the risk is them
+      # going stale: a model changes, nobody reruns the generator, and CI
+      # stays green against code that no longer matches. Regenerating and
+      # failing on a diff is what catches that.
+      - name: Check generated code is up to date
+        run: |
+          dart run build_runner build
+          git diff --exit-code -- '*.g.dart' '*.freezed.dart'
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      # --fatal-infos matters here: analysis_options.yaml turns on ~130 lints
+      # that report at info level, so without this the strict config would be
+      # advisory only.
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test --reporter expanded
+
+  server:
+    name: Server — build & test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: server
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fresh_fadez_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fresh_fadez_test?schema=public
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fresh_fadez_test?schema=public
+      JWT_ACCESS_SECRET: ci-access-secret-at-least-32-characters-long
+      JWT_REFRESH_SECRET: ci-refresh-secret-at-least-32-characters-long
+      NODE_ENV: test
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The booking guarantee is a btree_gist exclusion constraint, so the
+      # schema has to be really applied — the tests assert the constraint
+      # exists and fail loudly if it does not.
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      # The database tests skip themselves when TEST_DATABASE_URL is unset.
+      # That is sensible locally and dangerous in CI: a misconfigured job
+      # would report success having tested nothing. Fail on the skip.
+      - name: Test
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee test-output.txt
+          if grep -q "skipping database tests" test-output.txt; then
+            echo "::error::Database tests were skipped — TEST_DATABASE_URL is not reaching them."
+            exit 1
+          fi

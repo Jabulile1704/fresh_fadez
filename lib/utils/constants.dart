@@ -1,281 +1,214 @@
 import 'package:flutter/material.dart';
 
 // App Info
-const String appName = 'Fresh_Fadez';
+const String appName = 'Fresh Fadez';
 const String appVersion = '1.0.0';
 
-// Colors
+/// The app's palette: a single greyscale ramp, no hue anywhere.
+///
+/// This replaced an olive-and-beige palette. The rule that matters most:
+/// [grey600] is the lightest grey allowed to carry words (5.25:1 on white).
+/// [grey400] is for hairlines, disabled states and struck-through slots only.
+///
+/// Because there is no accent colour, state is carried by *fill and weight*
+/// rather than hue — solid black is confirmed, outlined is pending, grey is
+/// unavailable. That survives colour-blindness and direct sunlight, which a
+/// green/amber/red scheme does not.
 class AppColors {
-  // Olive Theme Colors
-  static const Color primary = Color(0xFF7A9B5C); // Olive Green
-  static const Color primaryDark = Color(0xFF6B8B4F); // Dark Olive
-  static const Color secondary = Color(0xFF9DAB7A); // Light Olive
-  static const Color accent = Color(0xFFB8C870); // Pale Olive
-  
-  // Background and surfaces
-  static const Color background = Color(0xFFF5F3ED); // Warm Beige
-  static const Color surface = Color(0xFFFFFFFF); // White
-  static const Color inputBackground = Color(0xFFF9F8F5); // Light warm beige
-  
-  // Text colors
-  static const Color textPrimary = Color(0xFF3D4A2E); // Dark Olive
-  static const Color textSecondary = Color(0xFF8B9B6F); // Medium Olive
-  static const Color textHint = Color(0xFFB8C49D); // Light Olive
-  
-  // Border and dividers
-  static const Color border = Color(0xFFD4CAB8); // Olive border
-  static const Color borderColor = Color(0xFFE8DFD3); // Olive divider
-  static const Color divider = Color(0xFFE8DFD3); // Olive divider
-  
-  // Status colors
-  static const Color error = Color(0xFFE67E22); // Warm Orange
-  static const Color success = Color(0xFF6BA85A); // Olive Green
-  static const Color warning = Color(0xFFD4A574); // Warm Tan
-  static const Color info = Color(0xFF7A9B5C); // Olive Green
+  const AppColors._();
 
-  // Olive Shades for FAB & Components
-  static const Color oliveDark = Color(0xFF6B8B4F); // Dark Olive
-  static const Color oliveMedium = Color(0xFF7A9B5C); // Medium Olive
-  static const Color oliveLight = Color(0xFFA5B87A); // Light Olive
-  static const Color olivePale = Color(0xFFC5D89E); // Pale Olive
-  
-  // Additional colors
-  static const Color shadow = Color(0x1A3D4A2E); // Shadow
+  // The ramp
+  static const Color black = Color(0xFF0A0A0A);
+  static const Color grey900 = Color(0xFF3A3A3A);
+  static const Color grey600 = Color(0xFF6B6B6B);
+  static const Color grey400 = Color(0xFFABABAB);
+  static const Color grey200 = Color(0xFFE4E4E4);
+  static const Color grey150 = Color(0xFFEFEFEF);
+  static const Color grey100 = Color(0xFFF0F0F0);
+  static const Color grey50 = Color(0xFFF7F7F7);
+  static const Color white = Color(0xFFFFFFFF);
+
+  // Semantic — light
+  static const Color primary = black;
+  static const Color onPrimary = white;
+  static const Color background = white;
+  static const Color surface = white;
+  static const Color surfaceMuted = grey50;
+  static const Color textPrimary = black;
+  static const Color textSecondary = grey600;
+  static const Color textDisabled = grey400;
+  static const Color border = grey200;
+  static const Color divider = grey150;
+
+  // Semantic — dark
+  static const Color primaryDark = white;
+  static const Color onPrimaryDark = black;
+  static const Color backgroundDark = black;
+  static const Color surfaceDark = Color(0xFF161616);
+  static const Color surfaceMutedDark = Color(0xFF202020);
+  static const Color textPrimaryDark = white;
+  static const Color textSecondaryDark = Color(0xFFACACAC);
+  static const Color textDisabledDark = Color(0xFF6E6E6E);
+  static const Color borderDark = Color(0xFF2A2A2A);
+  static const Color dividerDark = Color(0xFF242424);
+
+  // Frosted glass — the bottom navigation and the sticky action bars.
+  static const Color glassFillLight = Color(0xADFFFFFF); // white @ 68%
+  static const Color glassFillDark = Color(0x9E202020); // #202020 @ 62%
+  static const Color glassBorderLight = Color(0x170A0A0A); // black @ 9%
+  static const Color glassBorderDark = Color(0x24FFFFFF); // white @ 14%
+
+  /// There is no error hue. An error reads through an icon, a heavier border
+  /// and bold text — never colour alone, which would fail WCAG 1.4.1 anyway.
+  static const Color error = black;
+  static const Color errorDark = white;
+
+  static const Color shadow = Color(0xFF0A0A0A);
 }
 
 // Spacing
 class AppSpacing {
+  const AppSpacing._();
+
   static const double xs = 4;
   static const double small = 8;
   static const double medium = 16;
   static const double large = 24;
   static const double xlarge = 32;
   static const double xxlarge = 48;
+
+  /// Clearance every scrollable screen leaves at the bottom so its last row
+  /// is not trapped under the floating glass bar.
+  static const double navClearance = 118;
 }
 
 // Border Radius
 class AppRadius {
-  static const double small = 8;
-  static const double medium = 12;
-  static const double large = 16;
-  static const double xlarge = 20;
-  static const double circle = 50;
-}
+  const AppRadius._();
 
-// Alternative name for consistency
-class AppBorderRadius {
   static const double small = 8;
-  static const double medium = 12;
-  static const double large = 16;
-  static const double xlarge = 20;
-  static const double circle = 50;
+  static const double medium = 14;
+  static const double large = 18;
+  static const double xlarge = 22;
+  static const double pill = 999;
 }
 
 // Font Sizes
 class AppFontSize {
+  const AppFontSize._();
+
   static const double tiny = 10;
-  static const double small = 12;
-  static const double body = 14;
+  static const double caption = 11;
+  static const double small = 12.5;
+  static const double label = 13;
+  static const double body = 15;
   static const double subtitle = 16;
-  static const double title = 18;
-  static const double heading = 24;
-  static const double largeHeading = 32;
-  static const double extraLarge = 28;
+  static const double title = 19;
+  static const double heading = 27;
+  static const double display = 34;
 }
 
 // Font Weights
 class AppFontWeight {
-  static const FontWeight light = FontWeight.w300;
+  const AppFontWeight._();
+
   static const FontWeight regular = FontWeight.w400;
   static const FontWeight medium = FontWeight.w500;
   static const FontWeight semiBold = FontWeight.w600;
   static const FontWeight bold = FontWeight.w700;
-  static const FontWeight extraBold = FontWeight.w800;
 }
 
 // Animation Durations
 class AppDuration {
-  static const Duration fast = Duration(milliseconds: 200);
-  static const Duration normal = Duration(milliseconds: 300);
-  static const Duration slow = Duration(milliseconds: 500);
-  static const Duration slowest = Duration(milliseconds: 800);
+  const AppDuration._();
+
+  static const Duration fast = Duration(milliseconds: 160);
+  static const Duration normal = Duration(milliseconds: 260);
+  static const Duration slow = Duration(milliseconds: 420);
+}
+
+/// The frosted-glass recipe, in one place so the bottom bar and the sticky
+/// action bars cannot drift apart.
+class AppGlass {
+  const AppGlass._();
+
+  static const double blurSigma = 18;
+  static const double barHeight = 66;
+  static const double sideInset = 18;
+  static const double bottomInset = 20;
+
+  /// How far the centre book button rises above the bar.
+  static const double bookButtonLift = 22;
+  static const double bookButtonSize = 54;
+}
+
+class AppShadows {
+  const AppShadows._();
+
+  static const List<BoxShadow> card = [
+    BoxShadow(color: Color(0x0F0A0A0A), blurRadius: 12, offset: Offset(0, 2)),
+  ];
+
+  static const List<BoxShadow> glassBar = [
+    BoxShadow(color: Color(0x260A0A0A), blurRadius: 34, offset: Offset(0, 10)),
+  ];
+
+  static const List<BoxShadow> raisedButton = [
+    BoxShadow(color: Color(0x570A0A0A), blurRadius: 20, offset: Offset(0, 7)),
+  ];
+}
+
+class AppButtonStyles {
+  const AppButtonStyles._();
+
+  static const double primaryHeight = 56;
+  static const double secondaryHeight = 52;
+  static const double smallHeight = 40;
+  static const double borderWidth = 1.5;
 }
 
 // Service Categories
 class ServiceCategories {
-  static const List<String> categories = [
-    'Haircut',
-    'Hair Color',
-    'Styling',
-    'Treatment',
-  ];
-}
+  const ServiceCategories._();
 
-// Appointment Status
-class AppointmentStatus {
-  static const String pending = 'pending';
-  static const String confirmed = 'confirmed';
-  static const String completed = 'completed';
-  static const String cancelled = 'cancelled';
+  static const List<String> categories = [
+    'Hair Services',
+    'Skincare',
+    'Nails',
+    'Makeup',
+  ];
 }
 
 // Messages
 class AppMessages {
-  // Auth Messages
-  static const String welcomeBack = 'Welcome Back';
-  static const String loginToContinue = 'Login to your account';
+  const AppMessages._();
+
   static const String emailRequired = 'Email is required';
   static const String passwordRequired = 'Password is required';
-  static const String invalidEmail = 'Please enter a valid email';
+  static const String invalidEmail = 'Enter a valid email address';
   static const String passwordTooShort =
       'Password must be at least 6 characters';
-  static const String loginSuccess = 'Login successful!';
-  static const String logoutSuccess = 'Logged out successfully';
-  
-  // Booking Messages
-  static const String bookingSuccess = 'Appointment booked successfully!';
-  static const String bookingError = 'Failed to book appointment';
-  static const String selectService = 'Please select a service';
-  static const String selectStaff = 'Please select a staff member';
-  static const String selectDate = 'Please select a date';
-  static const String selectTime = 'Please select a time';
-  
-  // General Messages
+  static const String bookingSuccess = 'Appointment booked';
+  static const String selectService = 'Choose a service first';
+  static const String selectTime = 'Choose a time first';
   static const String somethingWentWrong =
       'Something went wrong. Please try again.';
-  static const String loading = 'Loading...';
-  static const String noDataFound = 'No data found';
-  static const String tryAgain = 'Try Again';
-  static const String cancel = 'Cancel';
-  static const String confirm = 'Confirm';
-}
-
-// Navigation Routes
-class AppRoutes {
-  static const String splash = '/';
-  static const String login = '/login';
-  static const String home = '/home';
-  static const String booking = '/booking';
-  static const String services = '/services';
-  static const String staffDetail = '/staff-detail';
-  static const String profile = '/profile';
-  static const String appointments = '/appointments';
-}
-
-// API Endpoints (if needed)
-class ApiEndpoints {
-  static const String baseUrl = 'https://api.example.com';
-  static const String login = '/auth/login';
-  static const String signup = '/auth/signup';
-  static const String services = '/services';
-  static const String staff = '/staff';
-  static const String bookings = '/bookings';
 }
 
 // Validation Patterns
 class ValidationPatterns {
+  const ValidationPatterns._();
+
   static const String emailPattern =
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
   static const String phonePattern = r'^[0-9]{10,}$';
   static const String namePattern = r'^[a-zA-Z\s]{2,}$';
 }
 
-// Shadow Styles
-class AppShadows {
-  static final List<BoxShadow> light = [
-    BoxShadow(
-      color: AppColors.shadow.withValues(alpha: 0.08),
-      blurRadius: 8,
-      offset: const Offset(0, 2),
-    ),
-  ];
-
-  static final List<BoxShadow> medium = [
-    BoxShadow(
-      color: AppColors.shadow.withValues(alpha: 0.12),
-      blurRadius: 12,
-      offset: const Offset(0, 4),
-    ),
-  ];
-
-  static final List<BoxShadow> heavy = [
-    BoxShadow(
-      color: AppColors.shadow.withValues(alpha: 0.16),
-      blurRadius: 16,
-      offset: const Offset(0, 8),
-    ),
-  ];
-}
-
-// Gradient Styles
-class AppGradients {
-  static const LinearGradient primaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      AppColors.primary,
-      AppColors.primaryDark,
-    ],
-  );
-
-  static const LinearGradient secondaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      AppColors.secondary,
-      AppColors.primary,
-    ],
-  );
-
-  static LinearGradient accentGradient({
-    required List<Color> colors,
-    Alignment begin = Alignment.topLeft,
-    Alignment end = Alignment.bottomRight,
-  }) => LinearGradient(
-      begin: begin,
-      end: end,
-      colors: colors,
-    );
-}
-
-// Button Styles
-class AppButtonStyles {
-  static const double primaryHeight = 56;
-  static const double secondaryHeight = 48;
-  static const double smallHeight = 40;
-  static const double borderWidth = 1.5;
-}
-
-// Input Decoration Styles
-class AppInputStyles {
-  static InputDecoration getOutlineInputDecoration({
-    required String label,
-    String? hint,
-    IconData? prefixIcon,
-    IconData? suffixIcon,
-  }) => InputDecoration(
-      label: Text(label),
-      hintText: hint,
-      prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-      suffixIcon: suffixIcon != null ? Icon(suffixIcon) : null,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-      ),
-    );
-}
-
-// Device Breakpoints
-class DeviceBreakpoints {
-  static const double mobile = 480;
-  static const double tablet = 768;
-  static const double desktop = 1024;
-}
-
 // Opacity Values
 class AppOpacity {
-  static const double disabled = 0.5;
-  static const double hover = 0.8;
-  static const double light = 0.1;
-  static const double medium = 0.5;
-  static const double heavy = 0.8;
+  const AppOpacity._();
+
+  static const double disabled = 0.4;
+  static const double pressed = 0.7;
 }

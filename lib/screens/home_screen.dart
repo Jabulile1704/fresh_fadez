@@ -1,476 +1,390 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../data/sample_data.dart';
+import '../models/appointment.dart';
+import '../models/service.dart';
 import '../utils/constants.dart';
-import '../widgets/salon_header.dart';
-import '../widgets/service_card.dart';
-import '../widgets/staff_card.dart';
+import '../utils/money.dart';
+import '../widgets/avatar_circle.dart';
+import '../widgets/service_row.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({
+    required this.appointments,
+    required this.onStartBooking,
+    required this.onSeeAllServices,
+    super.key,
+  });
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+  final List<Appointment> appointments;
+  final void Function(Service? service) onStartBooking;
+  final VoidCallback onSeeAllServices;
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  late TabController _tabController;
+  Appointment? get _nextAppointment {
+    final upcoming = appointments.where((a) => a.isUpcoming).toList()
+      ..sort((a, b) => a.localStart.compareTo(b.localStart));
+    return upcoming.isEmpty ? null : upcoming.first;
+  }
 
-  final List<Map<String, dynamic>> salonInfo = [
-    {
-      'name': 'After8 Hair Salon',
-      'rating': 4.8,
-      'reviews': 246,
-      'address': '123 Willows Street, Bloemfontein',
-      'phone': '+27 (51) 123-4567',
-      'hours': '9:00 AM - 8:00 PM',
-      'image': 'assets/images/Fresh Fades.png',
-      'description': 'Premium hair styling and beauty services',
+  String get _greeting {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Morning';
     }
-  ];
-
-  final List<Map<String, dynamic>> featuredServices = [
-    {
-      'name': 'Hair Cutting',
-      'category': 'Hair Services',
-      'price': 'R45',
-      'duration': '45 min',
-      'icon': Icons.content_cut,
-      'description': 'Professional haircut with styling',
-      'image': 'assets/images/haircut.jpg',
-    },
-    {
-      'name': 'Hair Coloring',
-      'category': 'Hair Services',
-      'price': 'R185',
-      'duration': '90 min',
-      'icon': Icons.palette,
-      'description': 'Full color treatment with consultation',
-      'image': 'assets/images/coloring.jpg',
-    },
-    {
-      'name': 'Facial Treatment',
-      'category': 'Skincare',
-      'price': 'R165',
-      'duration': '60 min',
-      'icon': Icons.face,
-      'description': 'Deep cleansing and rejuvenation',
-      'image': 'assets/images/facial.jpg',
-    },
-    {
-      'name': 'Manicure & Pedicure',
-      'category': 'Nails',
-      'price': 'R155',
-      'duration': '60 min',
-      'icon': Icons.brush,
-      'description': 'Full nail care and polish',
-      'image': 'assets/images/nails.jpg',
-    },
-  ];
-
-  final List<Map<String, dynamic>> staffMembers = [
-    {
-      'name': 'Jabulile Mashibini',
-      'title': 'Senior Stylist',
-      'specialty': 'Hair Cutting & Coloring',
-      'rating': 4.9,
-      'reviews': 156,
-      'image': 'assets/images/staff_sarah.jpg',
-      'experience': '8 years',
-    },
-    {
-      'name': 'Oscar Poco',
-      'title': 'Beauty Specialist',
-      'specialty': 'Facial & Skincare',
-      'rating': 4.7,
-      'reviews': 98,
-      'image': 'assets/images/staff_emma.jpg',
-      'experience': '6 years',
-    },
-    {
-      'name': 'Sebabatso Molelle',
-      'title': 'Nail Technician',
-      'specialty': 'Manicure & Pedicure',
-      'rating': 4.8,
-      'reviews': 127,
-      'image': 'assets/images/staff_lisa.jpg',
-      'experience': '5 years',
-    },
-    {
-      'name': 'Lwando Ndulula',
-      'title': 'Makeup Artist',
-      'specialty': 'Makeup & Bridal',
-      'rating': 4.9,
-      'reviews': 142,
-      'image': 'assets/images/staff_jessica.jpg',
-      'experience': '7 years',
-    },
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  void _navigateToBooking() {
-    Navigator.pushNamed(context, AppRoutes.booking);
-  }
-
-  void _navigateToServices() {
-    Navigator.pushNamed(context, AppRoutes.services);
-  }
-
-  void _navigateToStaffDetail(Map<String, dynamic> staff) {
-    Navigator.pushNamed(
-      context,
-      AppRoutes.staffDetail,
-      arguments: staff,
-    );
+    if (hour < 18) {
+      return 'Afternoon';
+    }
+    return 'Evening';
   }
 
   @override
   Widget build(BuildContext context) {
-    final salon = salonInfo[0];
+    final theme = Theme.of(context);
+    final next = _nextAppointment;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: CustomScrollView(
-        slivers: [
-          // Salon Header
-          SliverAppBar(
-            expandedHeight: 250,
-            pinned: true,
-            backgroundColor: AppColors.primary,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                salon['name'],
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+    return SafeArea(
+      bottom: false,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.large,
+          AppSpacing.large,
+          AppSpacing.large,
+          AppSpacing.navClearance,
+        ),
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      DateFormat('EEEE, d MMM').format(DateTime.now()),
+                      style: theme.textTheme.labelSmall,
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      '$_greeting, ${SampleData.currentUser.firstName}',
+                      style: theme.textTheme.headlineMedium,
+                    ),
+                  ],
                 ),
               ),
-              background: SalonHeader(salonInfo: salon),
-            ),
+              const SizedBox(width: AppSpacing.medium),
+              AvatarCircle(name: SampleData.currentUser.fullName, size: 44),
+            ],
           ),
-
-          // Content
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                // Salon Info Section
+          const SizedBox(height: 22),
+          if (next != null)
+            _NextUpCard(appointment: next)
+          else
+            _NoBookingsCard(onStartBooking: () => onStartBooking(null)),
+          const SizedBox(height: 30),
+          _SectionHeader(
+            title: 'Services',
+            actionLabel: 'See all',
+            onAction: onSeeAllServices,
+          ),
+          const SizedBox(height: AppSpacing.small + 4),
+          for (final service in SampleData.services.take(3))
+            ServiceRow(
+              service: service,
+              onTap: () => onStartBooking(service),
+              showDivider: service != SampleData.services[2],
+            ),
+          const SizedBox(height: 26),
+          Text('Our team', style: theme.textTheme.titleLarge),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              for (final stylist in SampleData.stylists)
                 Padding(
-                  padding: const EdgeInsets.all(AppSpacing.medium),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Rating and reviews
-                      Row(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: GestureDetector(
+                    onTap: () => onStartBooking(null),
+                    child: SizedBox(
+                      width: 62,
+                      child: Column(
                         children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 20,
+                          AvatarCircle(
+                            name: stylist.displayName,
+                            size: 58,
+                            filled: stylist == SampleData.stylists.first,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(height: AppSpacing.small),
                           Text(
-                            '${salon['rating']}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '(${salon['reviews']} reviews)',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: AppColors.textSecondary,
+                            stylist.firstName,
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-
-                      // Contact info
-                      _buildInfoRow(
-                        icon: Icons.location_on_outlined,
-                        label: salon['address'],
-                      ),
-                      const SizedBox(height: 12),
-
-                      _buildInfoRow(
-                        icon: Icons.call_outlined,
-                        label: salon['phone'],
-                      ),
-                      const SizedBox(height: 12),
-
-                      _buildInfoRow(
-                        icon: Icons.access_time_outlined,
-                        label: salon['hours'],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // Description
-                      const Text(
-                        'About Us',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        salon['description'],
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textSecondary,
-                          height: 1.6,
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // CTA Buttons Row
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildCTAButton(
-                              label: 'Book Now',
-                              onPressed: _navigateToBooking,
-                              isPrimary: true,
-                              icon: Icons.calendar_today_outlined,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildCTAButton(
-                              label: 'View Services',
-                              onPressed: _navigateToServices,
-                              isPrimary: false,
-                              icon: Icons.shopping_bag_outlined,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Featured Services Section
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Featured Services',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: _navigateToServices,
-                            child: const Text(
-                              'See All',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Services Grid
-                      GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 0.85,
-                        ),
-                        itemCount: featuredServices.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) => ServiceCard(
-                            service: featuredServices[index],
-                            // TODO: open the booking flow for this service.
-                            onTap: () {},
-                          ),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Staff Members Section
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Our Team',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              // Navigate to all staff
-                            },
-                            child: const Text(
-                              'View All',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Staff Horizontal Scroll
-                      SizedBox(
-                        height: 200,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: staffMembers.length,
-                          itemBuilder: (context, index) => Padding(
-                              padding: EdgeInsets.only(
-                                left: index == 0
-                                    ? AppSpacing.medium
-                                    : AppSpacing.small,
-                                right: index == staffMembers.length - 1
-                                    ? AppSpacing.medium
-                                    : 0,
-                              ),
-                              child: StaffCard(
-                                staff: staffMembers[index],
-                                onTap: () =>
-                                    _navigateToStaffDetail(staffMembers[index]),
-                              ),
-                            ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 32),
-                    ],
+                    ),
                   ),
                 ),
-              ],
+            ],
+          ),
+          const SizedBox(height: 26),
+          _SalonCard(),
+        ],
+      ),
+    );
+  }
+}
+
+class _NextUpCard extends StatelessWidget {
+  const _NextUpCard({required this.appointment});
+
+  final Appointment appointment;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final muted = scheme.onPrimary.withValues(alpha: 0.72);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: scheme.primary,
+        borderRadius: BorderRadius.circular(AppRadius.xlarge),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'NEXT UP',
+                  style: TextStyle(
+                    fontSize: AppFontSize.caption,
+                    fontWeight: AppFontWeight.semiBold,
+                    letterSpacing: 0.8,
+                    color: muted,
+                  ),
+                ),
+              ),
+              // A filled black pill would vanish on a black card, so the
+              // status inverts here.
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: scheme.onPrimary,
+                  borderRadius: BorderRadius.circular(AppRadius.small + 3),
+                ),
+                child: Text(
+                  appointment.status.label,
+                  style: TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: AppFontWeight.bold,
+                    letterSpacing: 0.4,
+                    color: scheme.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 13),
+          Text(
+            appointment.serviceName,
+            style: TextStyle(
+              fontSize: 21,
+              fontWeight: AppFontWeight.semiBold,
+              letterSpacing: -0.4,
+              color: scheme.onPrimary,
             ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            'with ${appointment.stylistName}',
+            style: TextStyle(fontSize: AppFontSize.label + 1, color: muted),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.medium),
+            child: Divider(color: scheme.onPrimary.withValues(alpha: 0.18)),
+          ),
+          Row(
+            children: [
+              _MetaChip(
+                icon: Icons.calendar_today_outlined,
+                label: appointment.dateLabel,
+                color: muted,
+              ),
+              const SizedBox(width: 18),
+              _MetaChip(
+                icon: Icons.access_time,
+                label: appointment.timeLabel,
+                color: muted,
+              ),
+              const Spacer(),
+              Text(
+                Money.fromCents(appointment.priceCents),
+                style: TextStyle(
+                  fontSize: AppFontSize.body,
+                  fontWeight: AppFontWeight.bold,
+                  color: scheme.onPrimary,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildInfoRow({
-    required IconData icon,
-    required String label,
-  }) => Row(
+class _MetaChip extends StatelessWidget {
+  const _MetaChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 15, color: color),
+      const SizedBox(width: 7),
+      Text(
+        label,
+        style: TextStyle(fontSize: AppFontSize.label, color: color),
+      ),
+    ],
+  );
+}
+
+class _NoBookingsCard extends StatelessWidget {
+  const _NoBookingsCard({required this.onStartBooking});
+
+  final VoidCallback onStartBooking;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outline),
+        borderRadius: BorderRadius.circular(AppRadius.xlarge),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Nothing booked', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 5),
+          Text(
+            'Three taps and the chair is yours.',
+            style: theme.textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          ElevatedButton(
+            onPressed: onStartBooking,
+            child: const Text('Book a slot'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title, this.actionLabel, this.onAction});
+
+  final String title;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
       children: [
-        Icon(
-          icon,
-          color: AppColors.primary,
-          size: 20,
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w500,
+        Expanded(child: Text(title, style: theme.textTheme.titleLarge)),
+        if (actionLabel != null)
+          GestureDetector(
+            onTap: onAction,
+            child: Text(
+              actionLabel!,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
-        ),
       ],
     );
+  }
+}
 
-  Widget _buildCTAButton({
-    required String label,
-    required VoidCallback onPressed,
-    required bool isPrimary,
-    required IconData icon,
-  }) => Container(
+class _SalonCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.medium + 2),
       decoration: BoxDecoration(
-        gradient: isPrimary
-            ? const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primary,
-                  AppColors.primaryDark,
-                ],
-              )
-            : null,
-        border: isPrimary
-            ? null
-            : Border.all(
-                color: AppColors.primary,
-                width: 1.5,
-              ),
-        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
-        boxShadow: isPrimary
-            ? [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [],
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppRadius.xlarge),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(AppBorderRadius.medium),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 16,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  color: isPrimary ? Colors.white : AppColors.primary,
-                  size: 24,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: isPrimary ? Colors.white : AppColors.primary,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ],
-            ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(SampleData.salonName, style: theme.textTheme.titleMedium),
+          const SizedBox(height: AppSpacing.small + 2),
+          const _InfoLine(
+            icon: Icons.location_on_outlined,
+            text: SampleData.salonAddress,
           ),
-        ),
+          const SizedBox(height: 7),
+          const _InfoLine(
+            icon: Icons.call_outlined,
+            text: SampleData.salonPhone,
+          ),
+          const SizedBox(height: 7),
+          const _InfoLine(
+            icon: Icons.access_time,
+            text: 'Open today · ${SampleData.salonHours}',
+          ),
+        ],
       ),
     );
+  }
+}
+
+class _InfoLine extends StatelessWidget {
+  const _InfoLine({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: theme.colorScheme.onSurfaceVariant),
+        const SizedBox(width: 10),
+        Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
+      ],
+    );
+  }
 }

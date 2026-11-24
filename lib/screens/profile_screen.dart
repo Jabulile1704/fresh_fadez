@@ -1,256 +1,212 @@
 import 'package:flutter/material.dart';
 
+import '../data/sample_data.dart';
+import '../models/appointment.dart';
 import '../utils/constants.dart';
-import '../widgets/custom_button.dart';
+import '../widgets/avatar_circle.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({
+    required this.appointments,
+    required this.onSignOut,
+    super.key,
+  });
+
+  final List<Appointment> appointments;
+  final VoidCallback onSignOut;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Profile Header
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(96, 31, 139, 7),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(AppRadius.large),
-                  bottomRight: Radius.circular(AppRadius.large),
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    const user = SampleData.currentUser;
+
+    return SafeArea(
+      bottom: false,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.large,
+          AppSpacing.large,
+          AppSpacing.large,
+          AppSpacing.navClearance,
+        ),
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text('Profile', style: theme.textTheme.headlineMedium),
+              ),
+              IconButton(
+                onPressed: () => _notYet(context, 'Editing your profile'),
+                icon: const Icon(Icons.edit_outlined, size: 18),
+                tooltip: 'Edit profile',
+                style: IconButton.styleFrom(
+                  shape: CircleBorder(side: BorderSide(color: scheme.outline)),
+                  minimumSize: const Size(40, 40),
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.large),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.large),
+          Row(
+            children: [
+              AvatarCircle(name: user.fullName, size: 68, filled: true),
+              const SizedBox(width: 15),
+              Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Profile Avatar
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 248, 133, 2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        size: 50,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.medium),
-                    const Text(
-                      'John Doe',
-                      style: TextStyle(
-                        fontSize: AppFontSize.heading,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.small),
-                    const Text(
-                      'john.doe@example.com',
-                      style: TextStyle(
-                        fontSize: AppFontSize.body,
-                        color: Colors.white70,
-                      ),
-                    ),
+                    Text(user.fullName, style: theme.textTheme.titleLarge),
+                    const SizedBox(height: 4),
+                    Text(user.email, style: theme.textTheme.bodyMedium),
+                    const SizedBox(height: 3),
+                    Text(user.phone, style: theme.textTheme.bodyMedium),
                   ],
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.large),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: scheme.outline),
+              borderRadius: BorderRadius.circular(AppRadius.large),
             ),
-
-            // Profile Details
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.large),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Phone
-                  _buildProfileItem(
-                    icon: Icons.phone,
-                    label: 'Phone',
-                    value: '+1 (555) 123-4567',
-                  ),
-                  const SizedBox(height: AppSpacing.large),
-
-                  // Appointments
-                  _buildProfileItem(
-                    icon: Icons.calendar_today,
-                    label: 'Total Appointments',
-                    value: '12',
-                  ),
-                  const SizedBox(height: AppSpacing.large),
-
-                  // Favorite Salons
-                  _buildProfileItem(
-                    icon: Icons.favorite,
-                    label: 'Favorite Salons',
-                    value: '3',
-                  ),
-                  const SizedBox(height: AppSpacing.xlarge),
-
-                  // Settings Section
-                  const Text(
-                    'Settings',
-                    style: TextStyle(
-                      fontSize: AppFontSize.title,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.medium),
-
-                  // Settings List
-                  _buildSettingsTile(
-                    icon: Icons.edit,
-                    title: 'Edit Profile',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Edit Profile - Coming Soon')),
-                      );
-                    },
-                  ),
-                  _buildSettingsTile(
-                    icon: Icons.notifications,
-                    title: 'Notifications',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Notifications - Coming Soon')),
-                      );
-                    },
-                  ),
-                  _buildSettingsTile(
-                    icon: Icons.security,
-                    title: 'Privacy & Security',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Privacy & Security - Coming Soon'),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildSettingsTile(
-                    icon: Icons.help,
-                    title: 'Help & Support',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Help & Support - Coming Soon')),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.xlarge),
-
-                  // Logout Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: CustomButton(
-                      label: 'Logout',
-                      onPressed: () {
-                        _showLogoutDialog(context);
-                      },
-                      backgroundColor: AppColors.error,
-                    ),
-                  ),
-                ],
-              ),
+            child: Row(
+              children: [
+                _Stat(value: '${appointments.length}', label: 'Bookings'),
+                _StatDivider(),
+                const _Stat(value: '3', label: 'Favourites'),
+                _StatDivider(),
+                const _Stat(value: "'24", label: 'Member since'),
+              ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 28),
+          Text('SETTINGS', style: theme.textTheme.labelSmall),
+          const SizedBox(height: 10),
+          _SettingsTile(
+            icon: Icons.notifications_none_rounded,
+            label: 'Notifications',
+            onTap: () => _notYet(context, 'Notification settings'),
+          ),
+          _SettingsTile(
+            icon: Icons.credit_card,
+            label: 'Payment methods',
+            onTap: () => _notYet(context, 'Payment methods'),
+          ),
+          _SettingsTile(
+            icon: Icons.shield_outlined,
+            label: 'Privacy & security',
+            onTap: () => _notYet(context, 'Privacy settings'),
+          ),
+          _SettingsTile(
+            icon: Icons.help_outline_rounded,
+            label: 'Help & support',
+            onTap: () => _notYet(context, 'Help & support'),
+            showDivider: false,
+          ),
+          const SizedBox(height: 26),
+          OutlinedButton(onPressed: onSignOut, child: const Text('Sign out')),
+        ],
       ),
     );
+  }
 
-  Widget _buildProfileItem({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) => Row(
-      children: [
-        Icon(
-          icon,
-          color: const Color.fromARGB(96, 31, 139, 7),
-          size: 24,
-        ),
-        const SizedBox(width: AppSpacing.medium),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  void _notYet(BuildContext context, String what) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('$what is not built yet.')));
+  }
+}
+
+class _Stat extends StatelessWidget {
+  const _Stat({required this.value, required this.label});
+
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        child: Column(
           children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: AppFontSize.small,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.small),
             Text(
               value,
               style: const TextStyle(
-                fontSize: AppFontSize.subtitle,
-                fontWeight: FontWeight.w600,
+                fontSize: 21,
+                fontWeight: AppFontWeight.bold,
               ),
             ),
-          ],
-        ),
-      ],
-    );
-
-  Widget _buildSettingsTile({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) => GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.medium),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: const Color.fromARGB(96, 31, 139, 7),
-              size: 24,
-            ),
-            const SizedBox(width: AppSpacing.medium),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: AppFontSize.body,
-                  fontWeight: FontWeight.w500,
-                ),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontSize: AppFontSize.caption + 0.5,
               ),
-            ),
-            const Icon(
-              Icons.arrow_forward_ios,
-              color: AppColors.textSecondary,
-              size: 16,
             ),
           ],
         ),
       ),
     );
+  }
+}
 
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushReplacementNamed(context, AppRoutes.login);
-            },
-            child: const Text('Logout', style: TextStyle(color: AppColors.error)),
-          ),
-        ],
+class _StatDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 1,
+    height: 52,
+    color: Theme.of(context).colorScheme.outline,
+  );
+}
+
+class _SettingsTile extends StatelessWidget {
+  const _SettingsTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.showDivider = true,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool showDivider;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        decoration: BoxDecoration(
+          border: showDivider
+              ? Border(bottom: BorderSide(color: scheme.outlineVariant))
+              : null,
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 19, color: scheme.onSurface),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                label,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: AppFontWeight.medium,
+                ),
+              ),
+            ),
+            const Icon(Icons.chevron_right, size: 20, color: AppColors.grey400),
+          ],
+        ),
       ),
     );
   }

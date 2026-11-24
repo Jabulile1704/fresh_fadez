@@ -1,0 +1,40 @@
+{
+  "name": "fresh-fadez-server",
+  "version": "1.0.0",
+  "description": "REST API for the Fresh Fadez salon booking app (After8 Hair Salon, Bloemfontein)",
+  "private": true,
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "prisma generate && tsc",
+    "build:watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "dev": "npm run build && node dist/index.js",
+    "migrate": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "db:reset": "prisma migrate reset --force --skip-seed && npm run seed",
+    "seed": "npm run build && node dist/scripts/seed.js",
+    "test": "npm run build && node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
+    "@prisma/client": "^6.17.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.13.10",
+    "prisma": "^6.17.0",
+    "typescript": "^5.8.2"
+  }
+}
