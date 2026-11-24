@@ -1,257 +1,238 @@
 import 'package:flutter/material.dart';
+
+import '../models/appointment.dart';
 import '../utils/constants.dart';
+import '../widgets/appointment_card.dart';
+
+enum _Filter { upcoming, past, cancelled }
 
 class AppointmentsScreen extends StatefulWidget {
-  const AppointmentsScreen({super.key});
+  const AppointmentsScreen({
+    required this.appointments,
+    required this.onReschedule,
+    required this.onCancel,
+    required this.onStartBooking,
+    super.key,
+  });
+
+  final List<Appointment> appointments;
+  final ValueChanged<Appointment> onReschedule;
+  final ValueChanged<Appointment> onCancel;
+  final VoidCallback onStartBooking;
 
   @override
   State<AppointmentsScreen> createState() => _AppointmentsScreenState();
 }
 
 class _AppointmentsScreenState extends State<AppointmentsScreen> {
-  final List<Map<String, dynamic>> appointments = [
-    {
-      'id': '1',
-      'service': 'Hair Cutting',
-      'staff': 'Jabulile Mashibini',
-      'date': '2024-12-15',
-      'time': '2:00 PM',
-      'status': 'confirmed',
-      'price': 'R45',
-    },
-    {
-      'id': '2',
-      'service': 'Facial Treatment',
-      'staff': 'Oscar Poco',
-      'date': '2024-12-20',
-      'time': '3:30 PM',
-      'status': 'pending',
-      'price': 'R165',
-    },
-  ];
+  _Filter _filter = _Filter.upcoming;
+
+  List<Appointment> get _visible {
+    final now = DateTime.now();
+    final matching = switch (_filter) {
+      _Filter.upcoming => widget.appointments.where(
+        (a) =>
+            a.appointmentDate.isAfter(now) &&
+            (a.status == AppointmentStatus.confirmed ||
+                a.status == AppointmentStatus.pending),
+      ),
+      _Filter.past => widget.appointments.where(
+        (a) =>
+            a.status == AppointmentStatus.completed ||
+            (a.appointmentDate.isBefore(now) &&
+                a.status != AppointmentStatus.cancelled &&
+                a.status != AppointmentStatus.noShow),
+      ),
+      _Filter.cancelled => widget.appointments.where(
+        (a) =>
+            a.status == AppointmentStatus.cancelled ||
+            a.status == AppointmentStatus.noShow,
+      ),
+    };
+
+    return matching.toList()
+      ..sort((a, b) => _filter == _Filter.upcoming
+          ? a.appointmentDate.compareTo(b.appointmentDate)
+          : b.appointmentDate.compareTo(a.appointmentDate));
+  }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('My Appointments'),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: appointments.isEmpty
-          ? _buildEmptyState()
-          : ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.medium),
-              itemCount: appointments.length,
-              itemBuilder: (context, index) => _buildAppointmentCard(appointments[index]),
-            ),
-    );
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final visible = _visible;
 
-  Widget _buildEmptyState() => Center(
+    return SafeArea(
+      bottom: false,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.calendar_today_outlined,
-            size: 64,
-            color: AppColors.textSecondary.withValues(alpha: 0.5),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'No Appointments Yet',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.large,
+              AppSpacing.large,
+              AppSpacing.large,
+              0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('My bookings', style: theme.textTheme.headlineMedium),
+                const SizedBox(height: 20),
+                _Segmented(
+                  value: _filter,
+                  onChanged: (value) => setState(() => _filter = value),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
-            'Book your first appointment to get started',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/booking');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.large,
-                vertical: AppSpacing.medium,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-              ),
-            ),
-            child: const Text(
-              'Book Appointment',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          Expanded(
+            child: visible.isEmpty
+                ? _EmptyState(
+                    filter: _filter,
+                    onStartBooking: widget.onStartBooking,
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.large,
+                      20,
+                      AppSpacing.large,
+                      AppSpacing.navClearance,
+                    ),
+                    itemCount: visible.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final appointment = visible[index];
+                      return AppointmentCard(
+                        appointment: appointment,
+                        onReschedule: () => widget.onReschedule(appointment),
+                        onCancel: () => widget.onCancel(appointment),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
     );
+  }
+}
 
-  Widget _buildAppointmentCard(Map<String, dynamic> appointment) {
-    final statusColor = appointment['status'] == 'confirmed'
-        ? AppColors.success
-        : AppColors.warning;
+class _Segmented extends StatelessWidget {
+  const _Segmented({required this.value, required this.onChanged});
+
+  final _Filter value;
+  final ValueChanged<_Filter> onChanged;
+
+  static const Map<_Filter, String> _labels = {
+    _Filter.upcoming: 'Upcoming',
+    _Filter.past: 'Past',
+    _Filter.cancelled: 'Cancelled',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.medium),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.large),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
+        color: scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
+      child: Row(
+        children: [
+          for (final entry in _labels.entries)
+            Expanded(
+              child: Semantics(
+                selected: entry.key == value,
+                button: true,
+                child: GestureDetector(
+                  onTap: () => onChanged(entry.key),
+                  child: Container(
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: entry.key == value ? scheme.surface : null,
+                      borderRadius: BorderRadius.circular(AppRadius.small + 3),
+                      boxShadow: entry.key == value ? AppShadows.card : null,
+                    ),
+                    child: Center(
+                      child: Text(
+                        entry.value,
+                        style: TextStyle(
+                          fontSize: AppFontSize.label,
+                          fontWeight: entry.key == value
+                              ? AppFontWeight.semiBold
+                              : AppFontWeight.medium,
+                          color: entry.key == value
+                              ? scheme.onSurface
+                              : scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({required this.filter, required this.onStartBooking});
+
+  final _Filter filter;
+  final VoidCallback onStartBooking;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final (String title, String body) = switch (filter) {
+      _Filter.upcoming => ('Nothing booked', 'Your next cut starts here.'),
+      _Filter.past => ('No history yet', 'Past visits will show up here.'),
+      _Filter.cancelled => (
+        'Nothing cancelled',
+        'Bookings you call off land here.',
+      ),
+    };
+
+    return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.medium),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xlarge,
+          0,
+          AppSpacing.xlarge,
+          AppSpacing.navClearance,
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // Header with status
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  appointment['service'],
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.small,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.1),
-                    borderRadius:
-                        BorderRadius.circular(AppRadius.small),
-                  ),
-                  child: Text(
-                    appointment['status'].toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: statusColor,
-                    ),
-                  ),
-                ),
-              ],
+            Icon(
+              Icons.event_note_outlined,
+              size: 46,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
-            const SizedBox(height: 12),
-
-            // Staff name
-            Row(
-              children: [
-                const Icon(
-                  Icons.person_outline,
-                  size: 16,
-                  color: AppColors.textSecondary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  appointment['staff'],
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
+            const SizedBox(height: AppSpacing.medium),
+            Text(title, style: theme.textTheme.titleMedium),
+            const SizedBox(height: 6),
+            Text(
+              body,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
             ),
-            const SizedBox(height: 8),
-
-            // Date and time
-            Row(
-              children: [
-                const Icon(
-                  Icons.calendar_today_outlined,
-                  size: 16,
-                  color: AppColors.textSecondary,
+            if (filter == _Filter.upcoming) ...[
+              const SizedBox(height: AppSpacing.large),
+              ElevatedButton(
+                onPressed: onStartBooking,
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(200, AppButtonStyles.secondaryHeight),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  appointment['date'],
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                const Icon(
-                  Icons.access_time_outlined,
-                  size: 16,
-                  color: AppColors.textSecondary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  appointment['time'],
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // Price and action buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  appointment['price'],
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
-                ),
-                Row(
-                  children: [
-                    TextButton.icon(
-                      onPressed: () {
-                        // Edit appointment
-                      },
-                      icon: const Icon(Icons.edit_outlined, size: 16),
-                      label: const Text('Edit'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.primary,
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {
-                        // Cancel appointment
-                      },
-                      icon: const Icon(Icons.close_outlined, size: 16),
-                      label: const Text('Cancel'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.error,
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                child: const Text('Book a slot'),
+              ),
+            ],
           ],
         ),
       ),

@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import '../routes/app_routes.dart';
 import '../utils/constants.dart';
-import '../widgets/animated_login_button.dart';
-import '../widgets/custom_text_field.dart';
+import '../widgets/app_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,283 +11,206 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late AnimationController _slideController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController(
+    text: 'jabu@example.com',
+  );
+  final TextEditingController _passwordController = TextEditingController(
+    text: 'password',
+  );
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-  bool isLoading = false;
-  bool isSignUp = false;
+  bool _isLoading = false;
   bool _obscurePassword = true;
 
   @override
-  void initState() {
-    super.initState();
-    _setupAnimations();
-  }
-
-  void _setupAnimations() {
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-
-    _slideController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
-    );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-    );
-
-    _fadeController.forward();
-    _slideController.forward();
-  }
-
-  Future<void> handleLogin() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => isLoading = true);
-
-      // Simulating a login/signup delay
-      await Future.delayed(const Duration(seconds: 2));
-
-      setState(() => isLoading = false);
-
-      if (mounted) {
-        unawaited(Navigator.pushReplacementNamed(context, AppRoutes.home));
-      }
-    }
-  }
-
-  void toggleAuthMode() {
-    setState(() {
-      isSignUp = !isSignUp;
-      _emailController.clear();
-      _passwordController.clear();
-    });
-  }
-
-  @override
   void dispose() {
-    _fadeController.dispose();
-    _slideController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  // Still simulated. Real credentials go in when auth lands — this screen
+  // then calls AuthRepository instead of waiting.
+  Future<void> _handleSignIn() async {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+    setState(() => _isLoading = true);
+    await Future<void>.delayed(const Duration(milliseconds: 900));
+    if (!mounted) {
+      return;
+    }
+    setState(() => _isLoading = false);
+    await Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return AppMessages.emailRequired;
+    }
+    if (!RegExp(ValidationPatterns.emailPattern).hasMatch(value.trim())) {
+      return AppMessages.invalidEmail;
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppMessages.passwordRequired;
+    }
+    if (value.length < 6) {
+      return AppMessages.passwordTooShort;
+    }
+    return null;
+  }
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-      backgroundColor: AppColors.background,
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: SlideTransition(
-                position: _slideAnimation,
-                child: Column(
+          padding: const EdgeInsets.fromLTRB(28, 56, 28, 32),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 58,
+                  height: 58,
+                  decoration: BoxDecoration(
+                    color: scheme.primary,
+                    borderRadius: BorderRadius.circular(19),
+                  ),
+                  child: Icon(
+                    Icons.content_cut,
+                    size: 26,
+                    color: scheme.onPrimary,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Text('Fresh\nFadez', style: theme.textTheme.displaySmall),
+                const SizedBox(height: 12),
+                Text(
+                  "Bloemfontein's chair, booked in\nabout thirty seconds.",
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    height: 1.45,
+                  ),
+                ),
+                const SizedBox(height: 44),
+                AppTextField(
+                  controller: _emailController,
+                  label: 'Email',
+                  hint: 'you@example.com',
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  validator: _validateEmail,
+                ),
+                const SizedBox(height: 18),
+                AppTextField(
+                  controller: _passwordController,
+                  label: 'Password',
+                  hint: 'Your password',
+                  obscureText: _obscurePassword,
+                  textInputAction: TextInputAction.done,
+                  validator: _validatePassword,
+                  suffix: IconButton(
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: 19,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                    tooltip: _obscurePassword
+                        ? 'Show password'
+                        : 'Hide password',
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => _notYet(context, 'Password reset'),
+                    child: const Text('Forgot password?'),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _handleSignIn,
+                  child: _isLoading
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.2,
+                            color: scheme.onPrimary,
+                          ),
+                        )
+                      : const Text('Sign in'),
+                ),
+                const SizedBox(height: 26),
+                Row(
                   children: [
-                    const SizedBox(height: 40),
-
-                    // Logo at the top
-                    FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              AppColors.primary,
-                              AppColors.primary.withValues(alpha: 0.7),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.3),
-                              blurRadius: 20,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Icon(
-                            Icons.lock_outline,
-                            size: 60,
-                            color: Colors.white,
-                          ),
-                        ),
+                    Expanded(child: Divider(color: scheme.outline)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.medium - 2,
                       ),
+                      child: Text('or', style: theme.textTheme.labelMedium),
                     ),
-
-                    const SizedBox(height: 40),
-
-                    // App title and subtitle
-                    const Text(
-                      appName,
-                      style: TextStyle(
-                        fontSize: AppFontSize.heading,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      isSignUp ? 'Create your account' : 'Welcome back',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-
-                    const SizedBox(height: 50),
-
-                    // Form
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          // Email field
-                          CustomTextField(
-                            controller: _emailController,
-                            label: 'Email',
-                            hint: 'Enter your email',
-                            icon: Icons.email_outlined,
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Email is required';
-                              }
-                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                  .hasMatch(value)) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          // Password field
-                          CustomTextField(
-                            controller: _passwordController,
-                            label: 'Password',
-                            hint: 'Enter your password',
-                            icon: Icons.lock_outline,
-                            obscureText: _obscurePassword,
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePassword
-                                    ? Icons.visibility_off_outlined
-                                    : Icons.visibility_outlined,
-                                color: AppColors.textSecondary,
-                              ),
-                              onPressed: () {
-                                setState(() =>
-                                    _obscurePassword = !_obscurePassword);
-                              },
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Password is required';
-                              }
-                              if (isSignUp && value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          // Forgot password link (only show on login)
-                          if (!isSignUp)
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  // Handle forgot password
-                                },
-                                child: const Text(
-                                  'Forgot password?',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                          const SizedBox(height: 40),
-
-                          // Animated gradient login button
-                          AnimatedLoginButton(
-                            label: isSignUp ? 'Sign Up' : 'Login',
-                            isLoading: isLoading,
-                            onPressed: handleLogin,
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          // Toggle between login and signup
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                isSignUp
-                                    ? 'Already have an account? '
-                                    : "Don't have an account? ",
-                                style: const TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: toggleAuthMode,
-                                child: Text(
-                                  isSignUp ? 'Login' : 'Sign Up',
-                                  style: const TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 40),
+                    Expanded(child: Divider(color: scheme.outline)),
                   ],
                 ),
-              ),
+                const SizedBox(height: 26),
+                OutlinedButton.icon(
+                  onPressed: _isLoading
+                      ? null
+                      : () =>
+                            Navigator.of(context)
+                                .pushReplacementNamed(AppRoutes.home),
+                  icon: const Icon(Icons.person_outline, size: 18),
+                  label: const Text('Continue as guest'),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: scheme.outline),
+                    minimumSize: const Size.fromHeight(
+                      AppButtonStyles.primaryHeight,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 36),
+                Center(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text('New here? ', style: theme.textTheme.bodyMedium),
+                      GestureDetector(
+                        onTap: () => _notYet(context, 'Sign up'),
+                        child: Text(
+                          'Create an account',
+                          style: theme.textTheme.labelLarge,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _notYet(BuildContext context, String what) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('$what is not built yet.')));
+  }
 }
